@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparing sliding friction on different surfaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#ec4899;
+  --primary-dark:#be185d;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#fff1f2;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(236,72,153,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:26px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #ffe4e6;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#ffe4e6;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#ffe4e6; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#fff5f5;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.mirror-choice{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;}
+.m-tab{
+  padding:6px 14px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:11.5px;font-weight:800;cursor:pointer;
+}
+.m-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.track-view{
+  width:100%;height:130px;border-radius:12px;position:relative;overflow:hidden;
+  border:4px solid #64748b;box-shadow:inset 0 0 20px rgba(0,0,0,0.6);
+  transition:0.4s;
+}
+.push-box{
+  position:absolute;bottom:14px;left:14px;width:54px;height:54px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  transition:left 1.2s cubic-bezier(0.22,0.9,0.34,1);box-shadow:0 4px 10px rgba(0,0,0,0.4);
+}
+.friction-meter{width:100%;margin-top:1.2rem;}
+.fm-label{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;font-weight:800;margin-bottom:4px;}
+.fm-bar{width:100%;height:14px;background:#1e293b;border-radius:10px;overflow:hidden;border:1px solid #334155;}
+.fm-fill{height:100%;border-radius:10px;transition:width 0.5s ease, background 0.5s ease;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#fff1f2;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-pink{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(236,72,153,0.2);}
+.btn-pink:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">📦🛼🪵</span>
+  <div class="header-title">Comparing Sliding Friction on Different Surfaces</div>
+  <div class="header-sub">Easy Science Class 8</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Push Test</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      Understanding Sliding Friction
+    </div>
+
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Have you noticed it's much harder to push a heavy box across a carpet than across a smooth tiled floor?
+      That "resistance" you feel is a force called <b>friction</b> — and it changes depending on the surface!
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        <b>Friction</b> is a force that opposes (works against) the sliding motion between two surfaces that are touching each other.<br><br>
+        Every surface, even one that looks perfectly flat, has tiny bumps and ridges on it (too small to see with our eyes). When two surfaces slide over each other, these tiny bumps lock and rub against each other, creating friction.<br><br>
+        <b>Rough surfaces</b> (like sandpaper, carpet, or a brick floor) have bigger, sharper bumps — so they create <b>more friction</b>, making it harder to push things across them.<br><br>
+        <b>Smooth surfaces</b> (like polished glass, tiles, or ice) have very tiny, flat bumps — so they create <b>less friction</b>, making it much easier to slide things across them.
+      </p>
+    </div>
+    
+    <div class="hint">
+      <b>Real Life Example:</b> That is exactly why athletes wear spiked shoes on a rough running track (more friction = better grip) but why ice skaters can glide so easily on smooth, slippery ice (less friction = easy sliding)!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      The Sliding Box Test
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">📦</span><div class="home-txt">A Small Box or Book</div></div>
+      <div class="home-item"><span class="home-icon">🪵</span><div class="home-txt">Wooden Table Top</div></div>
+      <div class="home-item"><span class="home-icon">🧺</span><div class="home-txt">A Piece of Carpet/Rug</div></div>
+      <div class="home-item"><span class="home-icon">🪟</span><div class="home-txt">Smooth Glass or Tile</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Place your box or a heavy book on the wooden table. Push it gently with one finger and feel how much force it takes to start it moving.<br>
+        <b>Step 2:</b> Now place the same box on a rug or carpet. Push it with the same amount of force. Notice — it is much harder to slide, or barely moves at all!<br>
+        <b>Step 3:</b> Finally, place the box on a smooth glass or tile surface. Give it the same gentle push. See how easily and how far it slides!<br>
+        <b>Step 4:</b> Compare all three — the carpet needed the most force (highest friction), the glass needed the least force (lowest friction), and the wooden table was somewhere in between.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Virtual Push Test Simulator
+    </div>
+    
+    <div class="material-title-line">📋 Simulator Material: 1 Virtual Box + 4 Surfaces</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Tap a surface below, then hit "Push the Box!" and watch how far it slides on each one.
+    </p>
+
+    <div class="sim-area">
+      <div class="mirror-choice">
+        <button class="m-tab active" id="btn-ice" onclick="changeSurface('ice')">🧊 Smooth Ice</button>
+        <button class="m-tab" id="btn-tile" onclick="changeSurface('tile')">🪟 Glass Tile</button>
+        <button class="m-tab" id="btn-wood" onclick="changeSurface('wood')">🪵 Wood Table</button>
+        <button class="m-tab" id="btn-carpet" onclick="changeSurface('carpet')">🧺 Rough Carpet</button>
+      </div>
+      
+      <div class="track-view" id="track" style="background:#a5f3fc;">
+        <div class="push-box" id="push-box" style="left:14px;">📦</div>
+      </div>
+
+      <div class="friction-meter">
+        <div class="fm-label"><span>LOW FRICTION</span><span>HIGH FRICTION</span></div>
+        <div class="fm-bar"><div class="fm-fill" id="fm-fill" style="width:10%;background:var(--green);"></div></div>
+      </div>
+      
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#22d3ee;margin-top:1rem; text-align:center;">
+        Ice has almost no bumps — the box slides super far with just a light push!
+      </div>
+
+      <button class="action-btn btn-pink" style="margin-top:1.2rem;" onclick="pushBox()">👉 Push the Box!</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Let's see if you can crack all friction secrets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>What is the force called that opposes the sliding motion between two touching surfaces?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Gravity</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Friction</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Magnetism</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>Why does a rough surface like carpet produce more friction than smooth glass?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) Because it is colder</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">B) It has bigger bumps that lock and rub together</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) Because it is heavier</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>On which surface would a box need the LEAST push force to start sliding?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) Rough carpet</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">B) Sandpaper</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">C) Smooth polished ice</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Why do athletes wear spiked shoes on a running track?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">A) To increase friction and get a better grip</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">B) To reduce their body weight</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) To make them run in a straight line only</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>Even a surface that "looks" perfectly flat and smooth still has:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) Tiny bumps and ridges too small to see</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) No friction at all, ever</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Magnetic force built into it</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-pink" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Check Results</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retry Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Friction Opposes Motion:</b> It is a force that always acts against the sliding movement of an object.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Bumps Cause It:</b> Every surface has tiny, invisible bumps. More bumps rubbing together means more friction.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Rough vs Smooth:</b> Rough surfaces (carpet, sandpaper) create high friction. Smooth surfaces (ice, glass) create low friction.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#f59e0b;">4</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Useful Everywhere:</b> Spiked shoes and tyre treads increase friction for grip, while skates and oiled machines reduce friction for smooth movement.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// FRICTION PUSH SIMULATOR
+const surfaceData = {
+  ice:    { color:"#a5f3fc", distance:"78%", friction:"10%", fcolor:"var(--green)", msg:"Ice has almost no bumps — the box slides super far with just a light push!" },
+  tile:   { color:"#e0e7ff", distance:"60%", friction:"30%", fcolor:"var(--green)", msg:"Glass tile is quite smooth too, so the box slides a good distance easily." },
+  wood:   { color:"#fde68a", distance:"38%", friction:"55%", fcolor:"#f59e0b", msg:"A wooden table has medium-sized bumps, so the box slides only a moderate distance." },
+  carpet: { color:"#fca5a5", distance:"16%", friction:"90%", fcolor:"var(--red)", msg:"Carpet has big, tangled bumps that grip the box — it barely slides at all!" }
+};
+let currentSurface = "ice";
+
+function changeSurface(surf) {
+  currentSurface = surf;
+  document.querySelectorAll('.m-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + surf).classList.add('active');
+
+  const data = surfaceData[surf];
+  document.getElementById('track').style.background = data.color;
+  document.getElementById('sim-status').textContent = data.msg;
+  document.getElementById('fm-fill').style.width = data.friction;
+  document.getElementById('fm-fill').style.background = data.fcolor;
+
+  document.getElementById('push-box').style.left = "14px";
+}
+
+function pushBox() {
+  const data = surfaceData[currentSurface];
+  const box = document.getElementById('push-box');
+  box.style.left = "14px";
+  void box.offsetWidth;
+  box.style.left = data.distance;
+}
+
+// QUIZ SYSTEM
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! Friction is the force that opposes sliding between two surfaces.", no: "Incorrect. This resisting force is called Friction." },
+  q2: { ok: "Excellent! Bigger bumps on rough surfaces lock together and resist sliding more.", no: "Wrong! Rough surfaces have bigger bumps that lock and rub together, causing more friction." },
+  q3: { ok: "Perfect! Smooth ice has almost no bumps, so it needs the least push force.", no: "Not quite. Smooth ice has the fewest bumps, so it needs the least force to slide." },
+  q4: { ok: "Great! Spikes dig in and increase friction, giving athletes better grip.", no: "Try again! Spiked shoes increase friction with the ground for a better grip." },
+  q5: { ok: "Correct! Even 'smooth-looking' surfaces have tiny invisible bumps that cause some friction.", no: "Incorrect. Every surface, even a smooth-looking one, has tiny invisible bumps." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Friction Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),#be185d)";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>
