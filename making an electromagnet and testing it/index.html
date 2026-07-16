@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making an Electromagnet and Testing Lifting Power</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#0284c7;
+  --primary-dark:#0369a1;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#f0f9ff;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(2,132,199,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:24px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #bae6fd;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#e0f2fe;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#e0f2fe; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#e0f2fe;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.slider-group {
+  width:100%;max-width:320px;margin-bottom:1rem;display:flex;flex-direction:column;gap:4px;
+}
+.slider-label {
+  display:flex;justify-content:between;color:#94a3b8;font-size:12px;font-weight:800;
+}
+.slider-control {
+  width:100%;accent-color:var(--primary);cursor:pointer;
+}
+
+.control-box{display:flex;gap:10px;margin-bottom:1.5rem;}
+.sim-btn{
+  padding:8px 18px;border-radius:20px;border:none;background:#334155;
+  color:#94a3b8;font-size:12px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+}
+.sim-btn.active{background:var(--primary);color:#fff;}
+
+.workspace-view{
+  width:100%;height:180px;display:flex;align-items:center;justify-content:center;position:relative;
+}
+.workspace-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#f0f9ff;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-sky{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(2,132,199,0.2);}
+.btn-sky:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">🧲⚡⚙️</span>
+  <div class="header-title">Making an Electromagnet & Testing Power</div>
+  <div class="header-sub">Physics Lab Class 10</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 Concept</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Lab Guide</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Virtual Lab</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      The Core Principle of Electromagnetism
+    </div>
+    
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      An ordinary piece of iron does not attract metal parts on its own. However, passing an electric current through an insulated wire wrapped around an iron piece instantly converts it into a powerful temporary magnet known as an <b>Electromagnet</b>.
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        When current flows through the copper wire coil, it generates a localized magnetic field. This field acts directly on the inner core, aligning the microscopic magnetic domains of the <b>Soft Iron Nail</b>. As long as the current stays on, the assembly acts as a strong magnet. <br><br>
+        The lifting capacity of an electromagnet depends directly on two main factors:
+        <br>1. <b>The Current Strength:</b> More electrical flow creates a stronger field.
+        <br>2. <b>The Number of Turns:</b> Wrapping more loops increases the collective magnetic output.
+      </p>
+    </div>
+    
+    <div class="hint">
+      <b>Temporary Behavior:</b> Soft iron is chosen because it loses its magnetic field instantly when the electric current is switched off. This on-demand magnetic switch is crucial for giant scrap crane systems and electronic sorting machines.
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      Step-by-Step Laboratory Guide
+    </div>
+
+    <div class="material-title-line">📋 Required Materials:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">🔩</span><div class="home-txt">Large Soft Iron Nail (3 inches)</div></div>
+      <div class="home-item"><span class="home-icon">🔌</span><div class="home-txt">Insulated Copper Wire</div></div>
+      <div class="home-item"><span class="home-icon">🔋</span><div class="home-txt">DC Battery Pack & Key Switch</div></div>
+      <div class="home-item"><span class="home-icon">📎</span><div class="home-txt">Steel Paper Clips (for testing)</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#f0fdf4; border-color:#bbf7d0;">
+      <h4 style="color:#16a34a;">🚀 Experimental Execution Steps:</h4>
+      <p style="line-height:1.6; color:var(--txt2);">
+        <b>Step 1:</b> Wind the insulated copper wire tightly around the soft iron nail in a single continuous direction, leaving free wire segments at both ends.<br>
+        <b>Step 2:</b> Strip away the protective insulation coating from both free wire tips using sandpaper.<br>
+        <b>Step 3:</b> Connect the exposed wire ends to the DC battery supply circuit via a switch key.<br>
+        <b>Step 4:</b> Close the switch circuit to start the flow of current. Bring the tip of the iron nail close to the container of paper clips and measure the maximum count of clips lifted.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Interactive Lifting Power Lab
+    </div>
+    
+    <div class="material-title-line">📋 Apparatus: Variable Direct Current Source + Soft Iron Core Coil + Iron Clips Block</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1.5rem;">
+      Adjust the parameters below to discover how wire loops and electric current affect the magnetic lifting capacity.
+    </p>
+
+    <div class="sim-area">
+      <div class="slider-group">
+        <div class="slider-label"><span>Wire Turns Loop Count:</span><span id="val-turns">30 Turns</span></div>
+        <input type="range" class="slider-control" id="range-turns" min="20" max="60" step="20" value="20" oninput="updateSimParameters()">
+      </div>
+
+      <div class="slider-group" style="margin-bottom:1.5rem;">
+        <div class="slider-label"><span>Electrical Current Input:</span><span id="val-current">1 Ampere</span></div>
+        <input type="range" class="slider-control" id="range-current" min="1" max="3" step="1" value="1" oninput="updateSimParameters()">
+      </div>
+
+      <div class="control-box">
+        <button class="sim-btn active" id="btn-off" onclick="togglePowerCircuit(false)"><i class="ti ti-power"></i> Switch OFF</button>
+        <button class="sim-btn" id="btn-on" onclick="togglePowerCircuit(true)"><i class="ti ti-bolt"></i> Switch ON</button>
+      </div>
+      
+      <div class="workspace-view">
+        <svg class="workspace-svg" viewBox="0 0 600 180">
+          <rect x="250" y="40" width="100" height="20" rx="3" fill="#64748b" stroke="#475569" stroke-width="2" />
+          <rect x="235" y="35" width="15" height="30" rx="2" fill="#475569" />
+          <text x="268" y="54" fill="#cbd5e1" font-size="10" font-weight="bold">IRON CORE</text>
+          
+          <g id="dynamic-wire-turns"></g>
+          
+          <rect x="70" y="110" width="80" height="40" rx="6" fill="#334155" />
+          <text x="88" y="134" fill="#94a3b8" font-size="11" font-weight="bold">DC SOURCE</text>
+          
+          <path d="M 235 50 L 50 50 L 50 130 L 70 130" fill="none" stroke="#f97316" stroke-width="2.5" />
+          <path id="circuit-wire-return" d="M 350 50 L 550 50 L 550 130 L 150 130" fill="none" stroke="#f97316" stroke-width="2.5" />
+          
+          <g id="magnetic-flux" style="display:none;">
+            <ellipse cx="300" cy="50" rx="80" ry="25" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+            <ellipse cx="300" cy="50" rx="110" ry="40" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+          </g>
+
+          <g id="clips-tray">
+            <line x1="200" y1="160" x2="400" y2="160" stroke="#475569" stroke-width="3"/>
+            <g id="attracted-clips-group"></g>
+          </g>
+        </svg>
+      </div>
+      
+      <div id="sim-feedback-panel" style="font-size:13px;font-weight:800;color:#94a3b8;margin-top:1rem; text-align:center;">
+        Flip the circuit switch ON to test the magnetic attraction.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Verify your comprehension of electromagnets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>Which core element is ideal for constructing a standard temporary electromagnet?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Permanent Steel Rod</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Soft Iron Nail Core</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Solid Copper Cylinder</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>What occurs immediately when the electrical current flow through an electromagnet is stopped?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) Magnetism increases further</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">B) Magnetic poles invert polarity</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">C) Magnetism disappears instantly</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>If we double the density of wire turns wrapped on the iron rod, the lifting power will:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">A) Increase significantly</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">B) Reduce to zero</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) Remain identical</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Which kind of wire is strictly used to wrap the coils of an electromagnet?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">A) Bare uninsulated iron wire</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">B) Insulated copper wire</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) Uninsulated string rope</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>Where are industrial-scale electromagnets practically deployed?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) Heavy scrap metal yard crane lifts</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) Filtration of water plants</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Filament lamps manufacturing</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-sky" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Calculate Total Score</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retake Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Revision Insights
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Temporary Nature:</b> Electromagnets act as temporary magnets because their magnetism exists only while the current flows.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Soft Iron Selection:</b> Soft iron is preferred over steel because it demagnetizes quickly without retaining residual magnetic effects.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Performance Factors:</b> Lifting capacity scales linearly with increased wire turn density and higher electric current input.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+let circuitActive = false;
+
+// SWITCH TAB VISIBILITY
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+  
+  if(tabId === 'simulation') {
+    renderWireTurnsGraphic();
+  }
+}
+
+// SIMULATOR COMPONENT ARCHITECTURE
+function updateSimParameters() {
+  const turns = document.getElementById('range-turns').value;
+  const current = document.getElementById('range-current').value;
+  
+  document.getElementById('val-turns').textContent = turns + " Turns";
+  document.getElementById('val-current').textContent = current + " Ampere";
+  
+  renderWireTurnsGraphic();
+  if(circuitActive) {
+    calculateLiftingCapacity(turns, current);
+  }
+}
+
+function renderWireTurnsGraphic() {
+  const container = document.getElementById('dynamic-wire-turns');
+  const loopCount = parseInt(document.getElementById('range-turns').value);
+  container.innerHTML = '';
+  
+  let totalLoops = loopCount / 2; 
+  let horizontalStart = 255;
+  let gapSpace = 90 / totalLoops;
+  
+  for(let i=0; i <= totalLoops; i++) {
+    let currentX = horizontalStart + (i * gapSpace);
+    let loopLine = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    loopLine.setAttribute("x", currentX);
+    loopLine.setAttribute("y", "38");
+    loopLine.setAttribute("width", "4");
+    loopLine.setAttribute("height", "24");
+    loopLine.setAttribute("fill", "#b45309");
+    loopLine.setAttribute("rx", "1");
+    container.appendChild(loopLine);
+  }
+}
+
+function togglePowerCircuit(turnOn) {
+  circuitActive = turnOn;
+  document.getElementById('btn-off').classList.remove('active');
+  document.getElementById('btn-on').classList.remove('active');
+  
+  const fluxGroup = document.getElementById('magnetic-flux');
+  const returnWire = document.getElementById('circuit-wire-return');
+  
+  if(turnOn) {
+    document.getElementById('btn-on').classList.add('active');
+    fluxGroup.style.display = "block";
+    returnWire.setAttribute("stroke", "#ef4444");
+    
+    const turns = document.getElementById('range-turns').value;
+    const current = document.getElementById('range-current').value;
+    calculateLiftingCapacity(turns, current);
+  } else {
+    document.getElementById('btn-off').classList.add('active');
+    fluxGroup.style.display = "none";
+    returnWire.setAttribute("stroke", "#f97316");
+    
+    document.getElementById('attracted-clips-group').innerHTML = '';
+    const txt = document.getElementById('sim-feedback-panel');
+    txt.style.color = "#94a3b8";
+    txt.textContent = "Switch turned OFF. Magnetized core completely drops all cargo clips!";
+  }
+}
+
+function calculateLiftingCapacity(turns, current) {
+  const clipsGroup = document.getElementById('attracted-clips-group');
+  clipsGroup.innerHTML = '';
+  
+  // Mathematical logic simulation weight calculations
+  let calculatedWeightFactor = (parseInt(turns) / 20) * parseInt(current);
+  let aggregateClipsCount = Math.floor(calculatedWeightFactor * 3);
+  
+  for(let i = 0; i < aggregateClipsCount; i++) {
+    let horizontalOffset = 245 + (Math.random() * 95);
+    let verticalOffset = 62 + (Math.random() * 20);
+    
+    let clipElement = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    clipElement.setAttribute("x", horizontalOffset);
+    clipElement.setAttribute("y", verticalOffset);
+    clipElement.setAttribute("width", "14");
+    clipElement.setAttribute("height", "5");
+    clipElement.setAttribute("rx", "1");
+    clipElement.setAttribute("fill", "none");
+    clipElement.setAttribute("stroke", "#94a3b8");
+    clipElement.setAttribute("stroke-width", "1.5");
+    clipElement.setAttribute("transform", `rotate(${Math.random() * 30} ${horizontalOffset} ${verticalOffset})`);
+    
+    clipsGroup.appendChild(clipElement);
+  }
+  
+  const feedbackPanel = document.getElementById('sim-feedback-panel');
+  feedbackPanel.style.color = "#0284c7";
+  feedbackPanel.textContent = `Success! Electromagnet configuration successfully lifts up exactly ${aggregateClipsCount} metallic steel clips!`;
+}
+
+// MULTIPLE CHOICE QUIZ MANAGEMENT ENGINE
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! Soft iron magnetizes and demagnetizes rapidly.", no: "Incorrect. Permanent steel retains fields too long, while copper won't act as a magnetic core." },
+  q2: { ok: "Perfect! Electromagnets completely lose their magnetic property instantly when current stops flowing.", no: "Wrong! Without current, the magnetic field drops directly to zero." },
+  q3: { ok: "Brilliant! More wire loops increase the total magnetic field concentration.", no: "Incorrect. Increasing turn count raises the aggregate electromagnetic power." },
+  q4: { ok: "Excellent! Insulated copper prevents internal short circuits between wire loops.", no: "Wrong. Bare wire would cause short circuits across the core block." },
+  q5: { ok: "Superb! Giant scrapyard cranes rely on massive electromagnets to shift metal waste panels.", no: "Incorrect. Electromagnets are used for sorting magnetic scrap metal waste." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Keep practicing! Take the test again to achieve a flawless score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic work! You have perfectly mastered electromagnets! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Well done! Your practical conceptual understanding is quite strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),var(--primary-dark))";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>

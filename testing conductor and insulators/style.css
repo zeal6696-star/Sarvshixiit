@@ -1,0 +1,127 @@
+*/* ===== LOGO BAR — add this to style.css ===== */
+.logo-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 10px 24px;
+  border-bottom: 3px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  width: 100%;
+  box-sizing: border-box;
+}
+.logo-img {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.logo-bar-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  flex: 1;
+}
+.logo-bar-center .collab-text {
+  font-size: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  background: linear-gradient(90deg, #1e40af, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-bar-center .collab-x {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  color: #94a3b8;
+  -webkit-text-fill-color: #94a3b8;
+}
+/* ===== END LOGO BAR ===== */
+{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --amber:#f59e0b;
+  --blue:#3b82f6;
+  --indigo:#4f46e5;
+  --orange:#f97316;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --txt:#0f172a;
+  --txt2:#475569;
+  --bdr:#cbd5e1;
+  --shadow:0 4px 20px rgba(15,23,42,0.05);
+  --radius:16px;
+  --radius-sm:10px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+.app{max-width:700px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER STRUCTURE DESIGN */
+.header{text-align:center;padding:1.5rem 1rem;}
+.header-emoji{font-size:44px;display:block;margin-bottom:6px;}
+.header-title{font-family:'Fredoka One',cursive;font-size:30px;background:linear-gradient(135deg,var(--indigo),var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header-sub{font-size:13px;color:var(--txt2);background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;border:2px solid #e2e8f0;margin-top:8px;font-weight:700;}
+
+/* NAVIGATION TAB BUTTON MANAGEMENT */
+.nav{display:flex;gap:6px;flex-wrap:wrap;padding:8px;background:#fff;border-radius:var(--radius);border:2px solid #e2e8f0;box-shadow:var(--shadow);margin-bottom:1.5rem;}
+.nav-btn{flex:1;min-width:85px;padding:9px 10px;border-radius:var(--radius-sm);border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);transition:all 0.2s;}
+.nav-btn.active{background:linear-gradient(135deg,var(--indigo),var(--blue));color:#fff;}
+
+.tab{display:none;}
+.tab.active{display:block;}
+
+/* CORE TEXT CARDS DESIGN */
+.card{background:var(--card);border:2px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card-title{font-family:'Fredoka One',cursive;font-size:18px;margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
+.card-title .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+
+/* TESTING OBJECT SELECTOR GRID Layout (As requested based on image_dbb1c5.png) */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:0.75rem;}
+.info-card{background:#f1f5f9;border:2px solid #e2e8f0;border-radius:var(--radius-sm);padding:0.9rem 0.75rem;text-align:center;transition:all 0.2s;}
+.info-card.active{border-color:var(--green);background:#f0fdf4;box-shadow:0 0 10px rgba(34,197,94,0.15);}
+.info-icon{font-size:24px;display:block;margin-bottom:4px;}
+.info-name{font-size:14px;font-weight:800;margin-bottom:2px;}
+.info-sub{font-size:11px;color:var(--txt2);line-height:1.3;}
+
+.hint{background:#f0f4ff;border-left:4px solid var(--indigo);padding:0.75rem 1rem;font-size:13px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;line-height:1.5;}
+
+/* TESTING WORKSPACE LAB BOX DESK Aesthetics (As requested based on image_dbb1a2.png) */
+.lab-box{width:100%;border-radius:var(--radius-sm);background:#0f172a;border:2px solid #334155;min-height:160px;display:grid;grid-template-columns:1fr 1.2fr 1fr;padding:20px;align-items:center;justify-items:center;}
+.circuit-element{display:flex;flex-direction:column;align-items:center;font-size:36px;}
+.element-label{font-size:11px;font-weight:800;color:#94a3b8;margin-top:8px;text-align:center;}
+
+.testing-gap-slot{width:65px;height:65px;background:#1e293b;border:3px dashed var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;transition:all 0.2s;}
+.testing-gap-slot.conducting{border-color:var(--green);background:rgba(34,197,94,0.1);}
+
+.bulb-fixture{font-size:42px;transition:all 0.2s ease;filter:grayscale(100%);}
+.bulb-fixture.glow{filter:grayscale(0%) drop-shadow(0 0 15px #facc15);transform:scale(1.05);}
+
+.status-msg{font-size:13px;font-weight:700;color:var(--indigo);background:#fff;padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;display:inline-block;}
+
+/* INTERACTIVE LAB QUIZ COMPONENT GRAPHICS */
+.quiz-q{background:#f8fafc;border:2px solid #e2e8f0;border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;}
+.quiz-q-num{font-size:11px;font-weight:800;color:var(--indigo);text-transform:uppercase;margin-bottom:4px;}
+.quiz-question{font-size:14px;font-weight:800;margin-bottom:0.6rem;line-height:1.4;}
+.quiz-opts{display:flex;flex-direction:column;gap:6px;}
+.quiz-opt{padding:10px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;color:var(--txt2);transition:all 0.1s;}
+.quiz-opt.selected{border-color:var(--blue);background:#f0f6ff;}
+.quiz-opt.reveal-correct{background:#dcfce7;border-color:var(--green);color:#15803d;font-weight:700;}
+.quiz-opt.reveal-wrong{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-fb{font-size:12px;margin-top:6px;padding:6px 10px;border-radius:6px;display:none;font-weight:600;}
+
+/* SCORECARD GRADIENT PANEL (As requested based on image_dbb142.jpg) */
+.scorecard-container{background:linear-gradient(135deg, var(--orange), #f43f5e);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;color:#fff;box-shadow:0 4px 15px rgba(244,63,94,0.2);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 0.3s ease;}
+.score-display-text{font-family:'Fredoka One',cursive;font-size:32px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.15);}
+.score-feedback-quote{font-size:13px;font-weight:700;line-height:1.4;margin-top:4px;opacity:0.95;max-width:400px;}

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dispersion of White Light Using a Prism</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#f43f5e;
+  --primary-dark:#e11d48;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#fff1f2;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(244,63,94,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:24px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #ffe4e6;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#ffe4e6;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#ffe4e6; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#fff1f2;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.control-box{display:flex;gap:10px;margin-bottom:1.5rem;}
+.sim-btn{
+  padding:8px 18px;border-radius:20px;border:none;background:#334155;
+  color:#94a3b8;font-size:12px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+}
+.sim-btn.active{background:var(--primary);color:#fff;}
+
+.prism-view{
+  width:100%;height:160px;display:flex;align-items:center;justify-content:center;position:relative;
+}
+.prism-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#fff1f2;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-rose{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(244,63,94,0.2);}
+.btn-rose:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">📐🌈🔦</span>
+  <div class="header-title">Dispersion of White Light Using a Prism</div>
+  <div class="header-sub">Easy Science Class 7</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Rainbow Lab</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      The Hidden Secrets of White Light
+    </div>
+    
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Sunlight and ordinary light from lamps appear completely white to our eyes. However, white light is actually a magnificent combination of <b>seven different beautiful colors</b> hidden perfectly inside it!
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        When a narrow beam of sunlight or a direct white light beam passes through a triangular piece of glass called a <b>Glass Prism</b>, the light bends at different angles. <br><br>
+        Because each of the seven constituent colors travels at a different speed inside the glass, they bend by different amounts and separate from one another. This splitting of white light into its component colors is called <b>Dispersion</b>. <br><br>
+        The colorful band of seven colors that forms on the screen is known as a <b>Spectrum</b>. You can easily remember the exact order of these colors using the acronym: <b>VIBGYOR</b> (Violet, Indigo, Blue, Green, Yellow, Orange, and Red).
+      </p>
+    </div>
+    
+    <div class="hint">
+      <b>The Secret of Rainbows:</b> Right after a rain shower, tiny water droplets suspended in the air act like microscopic prisms. When sunlight passes through these floating droplets, it splits into seven colors, forming a beautiful rainbow in the sky!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      Catching a Home Rainbow
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">📐</span><div class="home-txt">1 Glass Prism (Equilateral)</div></div>
+      <div class="home-item"><span class="home-icon">🔦</span><div class="home-txt">1 Bright Torch or Sunlight Beam</div></div>
+      <div class="home-item"><span class="home-icon">📄</span><div class="home-txt">1 Plain White Sheet or Wall</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Make your room dark, or stand near a window where a thin beam of direct sunlight is entering.<br>
+        <b>Step 2:</b> Hold the glass prism in your hand so that the beam of white light or torch light falls straight onto one of its flat faces.<br>
+        <b>Step 3:</b> Slowly rotate the prism until the light emerging from the opposite side falls directly onto an adjacent <b>White Paper Sheet or Wall</b>. You will see a beautiful band of seven vibrant colors painting the surface!
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Interactive Spectrum Lab
+    </div>
+    
+    <div class="material-title-line">📋 Simulator Material: 1 Narrow Ray Slit Box + 1 Equilateral Flawless Glass Prism</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Click the switch below to turn on the beam and unlock the VIBGYOR colors hidden inside white light!
+    </p>
+
+    <div class="sim-area">
+      <div class="control-box">
+        <button class="sim-btn active" id="btn-off" onclick="togglePrism(false)"><i class="ti ti-power"></i> Laser Beam OFF</button>
+        <button class="sim-btn" id="btn-on" onclick="togglePrism(true)"><i class="ti ti-bulb"></i> Laser Beam ON</button>
+      </div>
+      
+      <div class="prism-view">
+        <svg class="prism-svg" viewBox="0 0 600 160">
+          <polygon points="270,30 210,130 330,130" fill="rgba(255, 255, 255, 0.15)" stroke="#94a3b8" stroke-width="3" />
+          <text x="252" y="105" fill="#64748b" font-size="11" font-weight="bold">GLASS PRISM</text>
+          
+          <line id="white-ray" x1="40" y1="80" x2="240" y2="80" stroke="#ffffff" stroke-width="3" style="display:none;" />
+          
+          <g id="rainbow-group" style="display:none; opacity:0.85;">
+            <path d="M 240 80 L 290 85 L 480 40" stroke="#ef4444" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 291 87 L 480 55" stroke="#f97316" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 292 89 L 480 70" stroke="#facc15" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 293 91 L 480 85" stroke="#22c55e" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 294 93 L 480 100" stroke="#3b82f6" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 295 95 L 480 115" stroke="#4f46e5" stroke-width="2.5" fill="none" />
+            <path d="M 240 80 L 296 97 L 480 130" stroke="#a855f7" stroke-width="2.5" fill="none" />
+            
+            <line x1="480" y1="20" x2="480" y2="140" stroke="#cbd5e1" stroke-width="4" />
+            <text x="490" y="78" fill="#cbd5e1" font-size="10" font-weight="bold">SCREEN</text>
+          </g>
+        </svg>
+      </div>
+      
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#94a3b8;margin-top:1rem; text-align:center;">
+        Click 'Laser Beam ON' to shoot light into the glass prism core.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Test your knowledge on white light splitting!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>How many colors are naturally hidden inside a beam of normal white sunlight?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Only 3 colors</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) 7 colors</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) 12 colors</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>The breaking down of white light into its constituent colors is termed as:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">A) Dispersion</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">B) Reflection</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) Absorption</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>What is the memory keyword used to remember the exact order of rainbow colors?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) ABCDEFG</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">B) LUXURY</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">C) VIBGYOR</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Which transparent triangular piece of lab glassware splits white light into a rainbow line?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">A) Flat Window Sheet</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">B) Glass Prism</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) Concave Mirror</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>In nature, what acts like tiny mini-prisms to create a beautiful rainbow in the sky?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) Rainwater droplets suspended in air</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) Flying bird wings</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Dust particles</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-rose" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Calculate Total Score</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retake Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Dispersion Rule:</b> White light splits up into 7 individual distinct colors when entering a thick angled glass structure.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>VIBGYOR Sequence:</b> The colors spread from bottom to top in the exact order of Violet, Indigo, Blue, Green, Yellow, Orange, and Red.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Nature's Analogy:</b> Rainbows are formed due to dispersion of sunlight by countless tiny floating water drops acting as micro prisms.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// PRISM INTERACTIVE CONTROL
+function togglePrism(turnOn) {
+  const wRay = document.getElementById('white-ray');
+  const rainbow = document.getElementById('rainbow-group');
+  const txt = document.getElementById('sim-status');
+  
+  document.getElementById('btn-off').classList.remove('active');
+  document.getElementById('btn-on').classList.remove('active');
+  
+  if(turnOn) {
+    document.getElementById('btn-on').classList.add('active');
+    wRay.style.display = "block";
+    rainbow.style.display = "block";
+    txt.style.color = "#f43f5e";
+    txt.textContent = "Awesome! The White Light beam breaks down into 7 rich VIBGYOR bands inside the glass matrix!";
+  } else {
+    document.getElementById('btn-off').classList.add('active');
+    wRay.style.display = "none";
+    rainbow.style.display = "none";
+    txt.style.color = "#94a3b8";
+    txt.textContent = "Click 'Laser Beam ON' to shoot light into the glass prism core.";
+  }
+}
+
+// QUIZ ENGINE CONTEXT
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Superb! White light is a composite blend of exactly 7 unique rainbow shades.", no: "Incorrect. White light contains exactly 7 individual distinct wavelengths." },
+  q2: { ok: "Excellent! The process of parsing composite white rays into colors is called Dispersion.", no: "Wrong! Bouncing is reflection, but splitting into color bands is called dispersion." },
+  q3: { ok: "Brilliant! VIBGYOR charts out the progression from Violet up to the Red spectrum edge.", no: "No, the correct formula phrase is VIBGYOR." },
+  q4: { ok: "Perfect! A transparent triangular glass block is known as a Prism.", no: "Try again! Flat window glass won't split light; you need a triangular glass Prism." },
+  q5: { ok: "Awesome! Suspended rainwater acts as thousands of tiny prisms right after a storm.", no: "Incorrect. Hanging water droplets bend sunlight to project the colorful sky display." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Nice try! Play again to score a perfect 5/5!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Prism & Rainbow Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept of light dispersion is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),var(--primary-dark))";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>

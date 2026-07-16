@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observing refraction using concave and convex lenses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#8b5cf6;
+  --primary-dark:#6d28d9;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#f5f3ff;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(139,92,246,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:24px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #ddd6fe;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#ede9fe;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#ede9fe; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#f5f3ff;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.lens-choice{display:flex;gap:10px;margin-bottom:1.5rem;}
+.l-tab{
+  padding:6px 16px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:12px;font-weight:800;cursor:pointer;
+}
+.l-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.lens-view{
+  width:100%;height:140px;display:flex;align-items:center;justify-content:center;position:relative;
+}
+.lens-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#f5f3ff;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-purple{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(139,92,246,0.2);}
+.btn-purple:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">🔍👓✨</span>
+  <div class="header-title">Observing refraction using concave and convex lenses</div>
+  <div class="header-sub">Easy Science Class 7</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Lens Simulator</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      What does a Lens do to Light?
+    </div>
+    
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      When light passes through a clean glass window, it goes straight. But if the glass is special and curved, it bends the light beams! This bending of light when it passes through a transparent object is called <b>Refraction</b>.
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        Lenses are transparent glasses with curved surfaces that bend light passing through them. There are two main types:<br><br>
+        <b>1. Convex Lens (The Joiner):</b> This lens is thick in the middle and thin at the borders. When light passes through it, it bends all the rays inwards to meet at one single point. That's why it can make small text look giant! It is also called a <b>Converging Lens</b>.<br><br>
+        <b>2. Concave Lens (The Divider):</b> This lens is thin in the middle and thick at the edges. When light goes through it, it stretches and scatters the rays wide apart. It makes things look tiny and cute! It is also called a <b>Diverging Lens</b>.
+      </p>
+    </div>
+    
+    <div class="hint">
+      <b>Sunbeam Magic:</b> Since a convex lens bends all light rays into one tight spot, you can use it as a magnifying glass under the sun to create a super bright, hot dot of light on a paper sheet!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      The Simple Lens Text Test
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">🔍</span><div class="home-txt">1 Standard Convex Lens (Magnifying Glass)</div></div>
+      <div class="home-item"><span class="home-icon">👓</span><div class="home-txt">1 Concave Lens (Short-sight Spectacles)</div></div>
+      <div class="home-item"><span class="home-icon">📖</span><div class="home-txt">1 Book with small printed letters</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Open any book or newspaper and look closely at the small text.<br>
+        <b>Step 2:</b> Hold the <b>Convex Lens</b> over the letters and slowly move it away from the page. Notice how the alphabets swell up and look huge and easy to read!<br>
+        <b>Step 3:</b> Now, replace it with the <b>Concave Lens</b> and look at the same text. Wow! The alphabets look extremely tiny, sharp, and drifted far away.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Refraction Beam Simulator
+    </div>
+    
+    <div class="material-title-line">📋 Simulator Material: 1 Double-Beam Laser Rig + 1 Optical Glass Interchangeable Lens</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Select a lens below to see how the laser light beams bend (refract) when they travel through the glass center!
+    </p>
+
+    <div class="sim-area">
+      <div class="lens-choice">
+        <button class="l-tab active" id="btn-convex" onclick="changeLens('convex')">Convex Lens (Converging)</button>
+        <button class="l-tab" id="btn-concave" onclick="changeLens('concave')">Concave Lens (Diverging)</button>
+      </div>
+      
+      <div class="lens-view">
+        <svg class="lens-svg" viewBox="0 0 600 140">
+          <path id="glass-shape" d="M 285 20 Q 300 70 285 120 Q 315 70 285 20" fill="rgba(147, 197, 253, 0.4)" stroke="#93c5fd" stroke-width="2" />
+          
+          <path id="beam-top" d="M 40 40 L 293 40 L 460 70" stroke="#ef4444" stroke-width="3" fill="none" />
+          <path id="beam-bottom" d="M 40 100 L 293 100 L 460 70" stroke="#ef4444" stroke-width="3" fill="none" />
+          
+          <circle id="focus-point" cx="460" cy="70" r="5" fill="#facc15" />
+        </svg>
+      </div>
+      
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#a78bfa;margin-top:1rem; text-align:center;">
+        Convex Lens Refraction: Beams bend inwards and meet at a single focus point!
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Test your knowledge about bending light rays!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>The bending of light rays as they pass through a lens is called:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Reflection</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Refraction</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Shadow Creation</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>Which lens is thicker in the middle and thinner at the outer edges?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">A) Convex Lens</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">B) Concave Lens</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) Flat Window Pane</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>A Convex lens is also known as a converging lens because it:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) Scatters light beams far apart</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">B) Bends light rays inwards to meet at one point</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) Completely blocks light rays</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>When you view book letters through a Concave lens, they look:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">A) Gigantic and huge</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">B) Smaller in size</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) Colorful like a rainbow</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>A basic magnifying glass used to read tiny text is made of a:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">A) Concave Lens</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">B) Convex Lens</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Wooden Block</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-purple" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Calculate Total Score</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retake Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Refraction Meaning:</b> Refraction is just a scientific name for the bending of light rays when entering a transparent material.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Convex Joins:</b> Convex lenses converge light into a small bright dot and magnify book characters.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Concave Splits:</b> Concave lenses diverge or spread out incoming light rays, making objects appear shrunken.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// LENS SIMULATOR ENGINE
+function changeLens(type) {
+  const glass = document.getElementById('glass-shape');
+  const topB = document.getElementById('beam-top');
+  const botB = document.getElementById('beam-bottom');
+  const dot = document.getElementById('focus-point');
+  const txt = document.getElementById('sim-status');
+  
+  document.querySelectorAll('.l-tab').forEach(b => b.classList.remove('active'));
+  
+  if(type === 'convex') {
+    document.getElementById('btn-convex').classList.add('active');
+    // Change SVG paths to meet inside (converge)
+    glass.setAttribute('d', 'M 285 20 Q 310 70 285 120 Q 260 70 285 20');
+    topB.setAttribute('d', 'M 40 40 L 285 40 L 460 70');
+    botB.setAttribute('d', 'M 40 100 L 285 100 L 460 70');
+    dot.style.display = "block";
+    txt.textContent = "Convex Lens Refraction: Beams bend inwards and meet at a single focus point!";
+  } else {
+    document.getElementById('btn-concave').classList.add('active');
+    // Change SVG paths to spread wide (diverge)
+    glass.setAttribute('d', 'M 275 20 Q 295 70 275 120 L 295 120 Q 275 70 295 20 Z');
+    topB.setAttribute('d', 'M 40 40 L 285 40 L 480 15');
+    botB.setAttribute('d', 'M 40 100 L 285 100 L 480 125');
+    dot.style.display = "none";
+    txt.textContent = "Concave Lens Refraction: Beams turn outwards and scatter away from each other!";
+  }
+}
+
+// QUIZ SYSTEM ENGINE
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Superb! Bending of light rays due to medium shifts is called Refraction.", no: "Incorrect. Reflection means bouncing. Refraction means bending through glass." },
+  q2: { ok: "Excellent! Convex bulges out in the middle part.", no: "Wrong! Concave lenses are thin in the middle. Convex is fat in the middle." },
+  q3: { ok: "Brilliant! It brings all straight lines together into a single bright spot.", no: "No, converging means bringing beams closer to meet up at one target point." },
+  q4: { ok: "Perfect! A concave lens always reduces text sizes to make them tiny.", no: "Try again! Convex magnifies text, while Concave shrinks it down." },
+  q5: { ok: "Awesome! Magnifying tools utilize a convex design to scale up vision targets.", no: "Incorrect. Concave cannot magnify items; only convex lenses scale things up." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Lens & Refraction Genius! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your lens basic concept is clear.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),var(--primary-dark))";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>
