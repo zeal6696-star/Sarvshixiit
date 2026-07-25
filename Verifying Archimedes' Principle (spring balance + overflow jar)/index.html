@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifying Archimedes' Principle using spring balance and overflow jar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#ec4899;
+  --primary-dark:#be185d;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#fff1f2;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(236,72,153,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:26px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #ffe4e6;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#ffe4e6;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.formula-box{
+  background:#eff6ff;border:2px dashed var(--blue);border-radius:var(--radius-sm);
+  padding:1rem;text-align:center;margin:1rem 0;font-family:'Fredoka One',cursive;
+  font-size:15px;color:var(--primary-dark);
+}
+.formula-box small{display:block;font-family:'Nunito',sans-serif;font-size:12px;color:var(--txt2);font-weight:700;margin-top:6px;}
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#ffe4e6; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#fff5f5;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.mirror-choice{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;}
+.m-tab{
+  padding:6px 14px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:11.5px;font-weight:800;cursor:pointer;
+}
+.m-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.lab-row{display:flex;gap:14px;width:100%;flex-wrap:wrap;justify-content:center;align-items:flex-end;}
+
+/* SPRING BALANCE */
+.spring-balance{
+  width:100px;background:#1e293b;border-radius:12px;padding:10px 8px;
+  border:2px solid #475569;text-align:center;
+}
+.sb-hook{width:4px;height:14px;background:#94a3b8;margin:0 auto;transition:0.6s;}
+.sb-dial{
+  width:76px;height:76px;border-radius:50%;background:#f8fafc;margin:4px auto;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  border:4px solid #64748b;position:relative;
+}
+.sb-value{font-family:'Fredoka One',cursive;font-size:16px;color:var(--primary-dark);}
+.sb-unit{font-size:9px;color:var(--txt2);font-weight:800;}
+.sb-obj{font-size:22px;margin-top:2px;}
+.sb-label{font-size:10px;color:#94a3b8;font-weight:800;margin-top:4px;}
+
+/* OVERFLOW JAR */
+.jar-wrap{width:95px;display:flex;flex-direction:column;align-items:center;}
+.jar{
+  width:64px;height:120px;border:3px solid #94a3b8;border-radius:0 0 10px 10px;
+  position:relative;overflow:visible;background:rgba(255,255,255,0.03);
+}
+.jar-spout{
+  position:absolute;top:6px;right:-14px;width:16px;height:8px;
+  background:#94a3b8;border-radius:0 4px 4px 0;
+}
+.jar-water{
+  position:absolute;bottom:0;left:0;width:100%;height:82%;
+  background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:0 0 6px 6px;
+}
+.jar-object{
+  position:absolute;left:50%;transform:translateX(-50%);font-size:15px;
+  bottom:70px;opacity:0;transition:opacity 0.4s ease, bottom 0.9s ease;
+}
+.jar-label{font-size:10px;color:#94a3b8;font-weight:800;margin-top:6px;text-align:center;}
+
+/* COLLECTING BEAKER */
+.beaker-wrap{width:80px;display:flex;flex-direction:column;align-items:center;}
+.beaker{
+  width:56px;height:60px;border:3px solid #94a3b8;border-top:none;
+  border-radius:0 0 10px 10px;position:relative;overflow:hidden;
+  background:rgba(255,255,255,0.03);
+}
+.beaker-water{
+  position:absolute;bottom:0;left:0;width:100%;height:0%;
+  background:linear-gradient(180deg,#60a5fa,#2563eb);transition:height 0.9s ease 0.5s;
+}
+.beaker-label{font-size:10px;color:#94a3b8;font-weight:800;margin-top:6px;text-align:center;}
+
+/* RESULT PANEL */
+.result-panel{
+  width:100%;background:#1e293b;border-radius:12px;padding:1rem;margin-top:1.2rem;
+  display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;text-align:center;
+}
+.rp-item{min-width:80px;}
+.rp-val{font-family:'Fredoka One',cursive;font-size:16px;color:#fff;}
+.rp-lab{font-size:10px;color:#94a3b8;font-weight:800;margin-top:2px;}
+.rp-final .rp-val{color:#4ade80;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#fff1f2;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-pink{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(236,72,153,0.2);}
+.btn-pink:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">⚖️🫙🪨</span>
+  <div class="header-title">Verifying Archimedes' Principle</div>
+  <div class="header-sub">Spring Balance + Overflow Jar — Class 9</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Lab Test</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      Understanding Archimedes' Principle
+    </div>
+
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Have you noticed that a stone feels much lighter when you lift it underwater compared to lifting it in air?
+      Water is secretly pushing it upward — this upward push is what Archimedes' Principle explains!
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        When an object is dipped in a liquid, the liquid pushes it upward with a force called the <b>upthrust</b> or <b>buoyant force</b>. This is why objects feel lighter in water.<br><br>
+        <b>Archimedes' Principle</b> states that when a solid is fully or partly immersed in a liquid, it experiences an upward buoyant force that is exactly equal to the <b>weight of the liquid it displaces (pushes out of the way)</b>.<br><br>
+        So if we measure the weight of the solid in air, then its weight in water, the "loss in weight" should exactly match the weight of the water that overflowed out of a completely full jar when the solid was dipped in it.
+      </p>
+    </div>
+
+    <div class="formula-box">
+      Loss of weight in water = Weight of liquid displaced
+      <small>This equality is what we verify in this experiment</small>
+    </div>
+
+    <div class="hint">
+      <b>Real Life Example:</b> This is exactly why huge steel ships float on water (they displace a huge weight of water, so the upthrust balances their weight), and why it's much easier to lift a friend in a swimming pool than on land!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      Verify It Yourself
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">🪨</span><div class="home-txt">A Small Stone or Metal Bolt</div></div>
+      <div class="home-item"><span class="home-icon">⚖️</span><div class="home-txt">A Spring Balance</div></div>
+      <div class="home-item"><span class="home-icon">🫙</span><div class="home-txt">A Jar Filled Right to the Brim</div></div>
+      <div class="home-item"><span class="home-icon">🥤</span><div class="home-txt">An Empty Collecting Cup</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Tie the stone to the spring balance and note its <b>weight in air</b> (W₁).<br>
+        <b>Step 2:</b> Fill the overflow jar with water right up to the spout, and place an empty, pre-weighed cup under the spout to catch any overflow.<br>
+        <b>Step 3:</b> Slowly lower the stone (still hanging from the spring balance) completely into the jar, without letting it touch the bottom or sides. Water will overflow out of the spout into the cup below.<br>
+        <b>Step 4:</b> With the stone still submerged, note the new spring balance reading — the <b>weight in water</b> (W₂). Loss of weight = W₁ − W₂.<br>
+        <b>Step 5:</b> Now weigh the cup with the collected overflow water. You'll find this weight is almost exactly equal to the loss of weight (W₁ − W₂) — verifying Archimedes' Principle!
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Virtual Buoyancy Lab
+    </div>
+    
+    <div class="material-title-line">📋 Simulator: Spring Balance + Overflow Jar + Collecting Cup</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Pick an object, then dip it into the full jar and watch the weight drop as water overflows.
+    </p>
+
+    <div class="sim-area">
+      <div class="mirror-choice">
+        <button class="m-tab active" id="btn-stone" onclick="changeObject('stone')">🪨 Stone</button>
+        <button class="m-tab" id="btn-bolt" onclick="changeObject('bolt')">🔩 Iron Bolt</button>
+        <button class="m-tab" id="btn-cork" onclick="changeObject('cork')">🟤 Cork Piece</button>
+      </div>
+
+      <div class="lab-row">
+        <div class="spring-balance">
+          <div class="sb-label">SPRING BALANCE</div>
+          <div class="sb-hook" id="sb-hook"></div>
+          <div class="sb-dial">
+            <span class="sb-obj" id="sb-obj">🪨</span>
+            <span class="sb-value" id="sb-value">50</span>
+            <span class="sb-unit">grams-force</span>
+          </div>
+        </div>
+
+        <div class="jar-wrap">
+          <div class="jar-label" id="jar-status">Full to the brim</div>
+          <div class="jar">
+            <div class="jar-spout"></div>
+            <div class="jar-water"></div>
+            <div class="jar-object" id="jar-object">🪨</div>
+          </div>
+        </div>
+
+        <div class="beaker-wrap">
+          <div class="beaker-label">OVERFLOW CUP</div>
+          <div class="beaker">
+            <div class="beaker-water" id="beaker-water"></div>
+          </div>
+          <div class="beaker-label" id="beaker-reading">0 g water</div>
+        </div>
+      </div>
+
+      <div class="result-panel">
+        <div class="rp-item"><div class="rp-val" id="rp-w1">50 g</div><div class="rp-lab">WEIGHT IN AIR (W₁)</div></div>
+        <div class="rp-item"><div class="rp-val" id="rp-w2">-- g</div><div class="rp-lab">WEIGHT IN WATER (W₂)</div></div>
+        <div class="rp-item rp-final"><div class="rp-val" id="rp-loss">-- g</div><div class="rp-lab">LOSS OF WEIGHT</div></div>
+      </div>
+
+      <button class="action-btn btn-pink" style="margin-top:1.2rem;" onclick="dipObject()">👉 Dip Into the Jar!</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Let's see if you can crack all buoyancy secrets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>What is the upward force exerted by a liquid on a dipped object called?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Gravity</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Upthrust (buoyant force)</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Friction</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>According to Archimedes' Principle, the buoyant force on an immersed object equals:</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) The weight of the object itself</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">B) The weight of the liquid displaced by the object</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) The volume of the jar</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>In this experiment, what does the overflow jar help us measure?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) The temperature of the water</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">B) The amount (weight) of water displaced by the object</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) The colour of the object</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>If a stone weighs 50 g in air and 30 g in water, what is the loss of weight?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">A) 80 g</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">B) 20 g</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) 50 g</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>Why do heavy steel ships float on water without sinking?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) They displace a large weight of water, and the upthrust balances the ship's weight</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) Steel has no weight in water</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Ships are magnetically held up</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-pink" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Check Results</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retry Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Upthrust Exists:</b> A liquid always pushes an immersed object upward with a force called upthrust (buoyant force).</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Archimedes' Principle:</b> The buoyant force equals the weight of the liquid displaced by the immersed object.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Loss of Weight = Displaced Weight:</b> Weight in air minus weight in water equals the weight of the overflowed liquid.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#f59e0b;">4</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Explains Floating:</b> Ships and boats float because they displace enough water for the upthrust to balance their weight.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// ARCHIMEDES LAB SIMULATOR
+const objectData = {
+  stone: { emoji:"🪨", w1:50, w2:32 },
+  bolt:  { emoji:"🔩", w1:79, w2:65 },
+  cork:  { emoji:"🟤", w1:14, w2:6  }
+};
+let currentObject = "stone";
+
+function changeObject(obj) {
+  currentObject = obj;
+  document.querySelectorAll('.m-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + obj).classList.add('active');
+
+  const data = objectData[obj];
+  document.getElementById('sb-obj').textContent = data.emoji;
+  document.getElementById('sb-value').textContent = data.w1;
+  document.getElementById('sb-hook').style.height = "14px";
+
+  document.getElementById('jar-object').textContent = data.emoji;
+  document.getElementById('jar-object').style.opacity = "0";
+  document.getElementById('jar-object').style.bottom = "70px";
+  document.getElementById('jar-status').textContent = "Full to the brim";
+
+  document.getElementById('beaker-water').style.height = "0%";
+  document.getElementById('beaker-reading').textContent = "0 g water";
+
+  document.getElementById('rp-w1').textContent = data.w1 + " g";
+  document.getElementById('rp-w2').textContent = "-- g";
+  document.getElementById('rp-loss').textContent = "-- g";
+}
+
+function dipObject() {
+  const data = objectData[currentObject];
+  const loss = data.w1 - data.w2;
+
+  document.getElementById('sb-value').textContent = data.w2;
+  document.getElementById('sb-hook').style.height = "22px";
+
+  document.getElementById('jar-object').style.opacity = "1";
+  document.getElementById('jar-object').style.bottom = "40px";
+  document.getElementById('jar-status').textContent = "Water overflowing!";
+
+  document.getElementById('beaker-water').style.height = Math.min(loss * 3, 100) + "%";
+  document.getElementById('beaker-reading').textContent = loss + " g water";
+
+  document.getElementById('rp-w2').textContent = data.w2 + " g";
+  document.getElementById('rp-loss').textContent = loss + " g";
+}
+
+// QUIZ SYSTEM
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! It's called the upthrust or buoyant force.", no: "Incorrect. This upward push is called upthrust (buoyant force)." },
+  q2: { ok: "Excellent! That's exactly Archimedes' Principle.", no: "Wrong! The buoyant force equals the weight of the liquid displaced by the object." },
+  q3: { ok: "Perfect! The overflow jar collects the exact amount of water pushed out, letting us weigh it.", no: "Not quite. The overflow jar helps us measure the weight of water displaced by the object." },
+  q4: { ok: "Great! 50 g − 30 g = 20 g loss of weight.", no: "Try again! Loss of weight = 50 g − 30 g = 20 g." },
+  q5: { ok: "Correct! Ships displace a huge weight of water, so the upthrust balances their own weight.", no: "Incorrect. Ships float because they displace enough water for the upthrust to balance their weight." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are an Archimedes Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),#be185d)";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>
