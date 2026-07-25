@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making a Periscope</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1e40af;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#eff6ff;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(37,99,235,0.08);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:26px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #dbeafe;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#dbeafe;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.formula-box{
+  background:#eff6ff;border:2px dashed #93c5fd;border-radius:var(--radius-sm);
+  padding:1rem;text-align:center;margin:12px 0;
+}
+.formula-box .f-main{font-family:'Fredoka One',cursive;font-size:20px;color:var(--primary-dark);}
+.formula-box .f-sub{font-size:12px;color:var(--txt2);margin-top:4px;font-weight:700;}
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#dbeafe; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#eff6ff;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.mirror-choice{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;}
+.m-tab{
+  padding:6px 14px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:11.5px;font-weight:800;cursor:pointer;
+}
+.m-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.periscope-view{width:100%;display:flex;justify-content:center;}
+.periscope-view svg{width:100%;max-width:340px;height:auto;display:block;}
+
+.readout-panel{
+  width:100%;background:#1e293b;border-radius:12px;padding:1rem;margin-top:1.2rem;
+  border:1px solid #334155;
+}
+.rp-row{display:flex;justify-content:space-between;font-size:12.5px;color:#cbd5e1;font-weight:700;padding:4px 0;border-bottom:1px dashed #334155;}
+.rp-row:last-child{border-bottom:none;}
+.rp-row b{color:#fff;}
+.rp-result{
+  margin-top:10px;padding:10px;border-radius:8px;text-align:center;font-size:13px;font-weight:800;
+  background:#1e3a8a;color:#bfdbfe;
+}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#eff6ff;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-pink{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.25);}
+.btn-pink:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">🔭🪞🚢</span>
+  <div class="header-title">Making a Periscope</div>
+  <div class="header-sub">Seeing Over & Around Obstacles</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Virtual Scope</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      Understanding a Periscope
+    </div>
+
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Ever seen how a soldier peeks over a wall, or a submarine sees ships on the surface while staying underwater?
+      They use a simple device called a <b>periscope</b>, which lets you see things that are above your eye level
+      or hidden behind an obstacle.
+    </p>
+
+    <div class="formula-box">
+      <div class="f-main">Both mirrors fixed at 45° to the tube</div>
+      <div class="f-sub">Light bends twice, by 90° each time, to reach your eye</div>
+    </div>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        A periscope has two plane mirrors fixed parallel to each other, each tilted at <b>45°</b> to the tube, one at
+        the top and one at the bottom.<br><br>
+        Light from the object first strikes the top mirror and reflects downward through the tube by 90°. This
+        reflected ray then hits the bottom mirror, which reflects it again by 90°, sending it straight into your eye.<br><br>
+        Because of this double reflection, you can see over tall obstacles or around corners without exposing
+        yourself — this is exactly the principle used in submarine periscopes and tank periscopes.
+      </p>
+    </div>
+
+    <div class="hint">
+      <b>Real Life Example:</b> Submarines use long periscopes to view ships and the sky while staying underwater,
+      and soldiers use small periscopes to see over trench walls without being seen themselves!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      Build Your Own Periscope
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this activity:</div>
+
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">📦</span><div class="home-txt">A Long Cardboard Box / Tetra Pack</div></div>
+      <div class="home-item"><span class="home-icon">🪞</span><div class="home-txt">2 Small Plane Mirrors</div></div>
+      <div class="home-item"><span class="home-icon">✂️</span><div class="home-txt">Scissors / Cutter</div></div>
+      <div class="home-item"><span class="home-icon">📐</span><div class="home-txt">Ruler and Pencil</div></div>
+      <div class="home-item"><span class="home-icon">🧻</span><div class="home-txt">Tape or Glue</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Take the long box and mark two slits, one near the top and one near the bottom, on opposite
+        faces, each cut at a 45° angle.<br>
+        <b>Step 2:</b> Also cut a small viewing hole in front of the bottom slit, and a small opening for light to
+        enter in front of the top slit.<br>
+        <b>Step 3:</b> Slide one mirror into the top slit, tilted at 45°, facing the opening above it.<br>
+        <b>Step 4:</b> Slide the second mirror into the bottom slit, tilted at 45° and parallel to the first mirror,
+        facing the viewing hole.<br>
+        <b>Step 5:</b> Fix both mirrors firmly with tape, close up the box, and look through the bottom hole while
+        pointing the top opening over a wall — you should see whatever is on the other side!
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Virtual Periscope
+    </div>
+
+    <div class="material-title-line">📋 Point it at an object, then trace the light path</div>
+
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Choose what the periscope is pointed at, then tap "Trace Light Path" to see how the ray reflects twice to
+      reach the eye.
+    </p>
+
+    <div class="sim-area">
+      <div class="mirror-choice">
+        <button class="m-tab active" id="btn-ship" onclick="changeTarget('ship')">🚢 Ship over wall</button>
+        <button class="m-tab" id="btn-tree" onclick="changeTarget('tree')">🌳 Tree over fence</button>
+        <button class="m-tab" id="btn-sun" onclick="changeTarget('sun')">☀️ Sky above</button>
+      </div>
+
+      <div class="periscope-view" id="periscope-view"></div>
+
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#93c5fd;margin:0.8rem 0; text-align:center;">
+        Choose a target and trace the ray to see how the periscope works.
+      </div>
+
+      <div class="readout-panel">
+        <div class="rp-row"><span>Top mirror angle</span><b>45°</b></div>
+        <div class="rp-row"><span>Bottom mirror angle</span><b>45°</b></div>
+        <div class="rp-row"><span>Total bending of light</span><b>90° + 90° = 180°</b></div>
+        <div class="rp-result" id="rp-result">Tap "Trace Light Path" to animate the ray.</div>
+      </div>
+
+      <button class="action-btn btn-pink" style="margin-top:1.2rem;" onclick="traceRay()">✨ Trace Light Path</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Let's see if you can crack all periscope secrets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>What is a periscope mainly used for?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Making objects look bigger</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Seeing objects above eye level or around obstacles</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Splitting white light into colours</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>How many mirrors does a basic periscope use, and at what angle are they fixed?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">B) Two mirrors, each fixed at 45° to the tube</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) One mirror fixed at 90°</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) Three mirrors fixed at 30°</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>By how much does each mirror bend the direction of light?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) 45°</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">B) 90°</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) 180°</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Which of these is a real-life use of a periscope?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">A) A submarine viewing ships on the surface while staying underwater</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">B) Reading small print on a label</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) Cooking food evenly in an oven</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>Why must the two mirrors in a periscope be exactly parallel to each other?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) So the final ray reaching the eye travels in the same direction as the original ray, just shifted sideways</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) So the mirrors don't get scratched</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) So the image appears upside down</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-pink" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Check Results</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retry Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Purpose:</b> A periscope lets us see objects above our eye level or hidden behind obstacles.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Two Mirrors at 45°:</b> Both mirrors are fixed parallel to each other, each tilted 45° to the tube.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Double Reflection:</b> Light bends 90° at the top mirror, travels down the tube, then bends another 90° at the bottom mirror into the eye.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#f59e0b;">4</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Parallel Mirrors:</b> Because the mirrors are parallel, the final image travels in the same direction as the original light, just shifted.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#ef4444;">5</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Used Everywhere:</b> Submarines, tanks, and trench-viewing devices all use periscopes based on this same idea.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById('tab-' + tabId).classList.add('active');
+
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// PERISCOPE SIMULATOR
+const targetData = {
+  ship: { emoji:"🚢", label:"a ship over the wall", msg:"Light from the ship hits the top mirror, bends 90° down the tube, then bends another 90° at the bottom mirror into your eye." },
+  tree: { emoji:"🌳", label:"a tree over the fence", msg:"Light from the tree reflects off the top mirror, travels down, then reflects off the bottom mirror straight to your eye." },
+  sun:  { emoji:"☀️", label:"the sky above", msg:"Light from the sky reflects twice — once at the top mirror, once at the bottom — before reaching your eye." }
+};
+let currentTarget = "ship";
+
+function changeTarget(t) {
+  currentTarget = t;
+  document.querySelectorAll('.m-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + t).classList.add('active');
+  document.getElementById('rp-result').textContent = 'Tap "Trace Light Path" to animate the ray.';
+  renderPeriscope(false);
+}
+
+function traceRay() {
+  renderPeriscope(true);
+  const data = targetData[currentTarget];
+  document.getElementById('sim-status').textContent = "Viewing " + data.label + " — " + data.msg;
+  document.getElementById('rp-result').textContent = "Ray path: Object → Top Mirror (45°) → down the tube → Bottom Mirror (45°) → Your Eye";
+}
+
+function renderPeriscope(showRay) {
+  const data = targetData[currentTarget];
+  const w = 340, h = 260;
+
+  const topMirrorX1 = 205, topMirrorY1 = 40, topMirrorX2 = 255, topMirrorY2 = 65;
+  const botMirrorX1 = 85, botMirrorY1 = 195, botMirrorX2 = 135, botMirrorY2 = 220;
+
+  let rayPath = "";
+  if (showRay) {
+    rayPath = `
+      <line x1="290" y1="20" x2="228" y2="52" stroke="#facc15" stroke-width="3" stroke-dasharray="6 4">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.6s" fill="freeze"/>
+      </line>
+      <line x1="228" y1="52" x2="112" y2="207" stroke="#facc15" stroke-width="3" stroke-dasharray="6 4">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.6s" begin="0.4s" fill="freeze"/>
+      </line>
+      <line x1="112" y1="207" x2="45" y2="230" stroke="#facc15" stroke-width="3" stroke-dasharray="6 4">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.6s" begin="0.8s" fill="freeze"/>
+      </line>
+    `;
+  }
+
+  const svg = `
+    <svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="${w}" height="${h}" fill="#0f172a"/>
+
+      <!-- wall/obstacle -->
+      <rect x="150" y="90" width="18" height="150" fill="#475569"/>
+      <text x="159" y="260" fill="#94a3b8" font-size="10" font-weight="700" text-anchor="middle">WALL</text>
+
+      <!-- object on the far side -->
+      <text x="290" y="30" font-size="26" text-anchor="middle">${data.emoji}</text>
+
+      <!-- periscope tube -->
+      <rect x="90" y="55" width="18" height="150" fill="#334155" stroke="#64748b" stroke-width="2"/>
+      <rect x="200" y="55" width="60" height="18" fill="#334155" stroke="#64748b" stroke-width="2" transform="rotate(0)"/>
+      <polygon points="90,55 260,55 260,73 108,73" fill="#334155" stroke="#64748b" stroke-width="2"/>
+      <polygon points="90,187 108,187 108,205 90,205" fill="#334155" stroke="#64748b" stroke-width="2"/>
+
+      <!-- top mirror -->
+      <line x1="${topMirrorX1}" y1="${topMirrorY1}" x2="${topMirrorX2}" y2="${topMirrorY2}" stroke="#e2e8f0" stroke-width="5"/>
+      <!-- bottom mirror -->
+      <line x1="${botMirrorX1}" y1="${botMirrorY1}" x2="${botMirrorX2}" y2="${botMirrorY2}" stroke="#e2e8f0" stroke-width="5"/>
+
+      ${rayPath}
+
+      <!-- eye -->
+      <text x="30" y="238" font-size="22" text-anchor="middle">👁️</text>
+      <text x="30" y="252" fill="#94a3b8" font-size="9" font-weight="700" text-anchor="middle">EYE</text>
+    </svg>
+  `;
+  document.getElementById('periscope-view').innerHTML = svg;
+}
+
+// initial render
+renderPeriscope(false);
+
+// QUIZ SYSTEM
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! A periscope helps us see objects above eye level or hidden behind an obstacle.", no: "Incorrect. A periscope lets us see over or around obstacles using two mirrors." },
+  q2: { ok: "Excellent! Two mirrors, each fixed at 45° to the tube, parallel to each other.", no: "Wrong! A periscope uses two mirrors, each tilted at 45° to the tube." },
+  q3: { ok: "Perfect! Each 45° mirror bends the light's direction by 90°.", no: "Not quite. Each mirror bends the light by 90°, giving a total change of 180°." },
+  q4: { ok: "Great! Submarines use long periscopes to see the surface while staying underwater.", no: "Try again! Submarines viewing the surface is the classic real-life use of a periscope." },
+  q5: { ok: "Correct! Parallel mirrors keep the final ray travelling in the same direction as the original, just shifted sideways.", no: "Not quite. Parallel mirrors ensure the final image direction matches the original light direction, only shifted." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Periscope Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),#1e40af)";
+  }
+
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>

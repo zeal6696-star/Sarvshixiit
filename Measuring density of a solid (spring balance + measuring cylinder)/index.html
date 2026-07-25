@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Measuring Density of a Solid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#0891b2;
+  --primary-dark:#0e7490;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#ecfeff;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(8,145,178,0.08);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:26px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #cffafe;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#cffafe;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.formula-box{
+  background:#f0fdfa;border:2px dashed #5eead4;border-radius:var(--radius-sm);
+  padding:1rem;text-align:center;margin:12px 0;
+}
+.formula-box .f-main{font-family:'Fredoka One',cursive;font-size:20px;color:var(--primary-dark);}
+.formula-box .f-sub{font-size:12px;color:var(--txt2);margin-top:4px;font-weight:700;}
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#cffafe; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#f0fdff;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.mirror-choice{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;}
+.m-tab{
+  padding:6px 14px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:11.5px;font-weight:800;cursor:pointer;
+}
+.m-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.lab-row{display:flex;gap:1.5rem;justify-content:center;align-items:flex-end;flex-wrap:wrap;width:100%;margin-bottom:1rem;}
+
+/* SPRING BALANCE */
+.balance-wrap{display:flex;flex-direction:column;align-items:center;}
+.balance-hook{width:6px;height:14px;background:#94a3b8;}
+.balance-body{
+  width:64px;height:110px;background:linear-gradient(180deg,#475569,#1e293b);
+  border-radius:10px 10px 6px 6px;position:relative;border:2px solid #64748b;
+  display:flex;flex-direction:column;align-items:center;padding-top:8px;
+}
+.balance-dial{
+  width:46px;height:46px;border-radius:50%;background:#f8fafc;border:3px solid #94a3b8;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--primary-dark);
+}
+.balance-scale{font-size:8px;color:#cbd5e1;margin-top:4px;font-weight:700;}
+.balance-spring{width:10px;height:26px;background:repeating-linear-gradient(0deg,#94a3b8 0 3px,transparent 3px 6px);margin:2px 0;}
+.balance-string{width:2px;height:16px;background:#cbd5e1;}
+.hang-object{
+  width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;box-shadow:0 3px 8px rgba(0,0,0,0.4);
+}
+
+/* MEASURING CYLINDER */
+.cyl-wrap{display:flex;flex-direction:column;align-items:center;}
+.cylinder{
+  width:60px;height:150px;border:3px solid #94a3b8;border-top:none;border-radius:0 0 10px 10px;
+  position:relative;overflow:hidden;background:rgba(255,255,255,0.03);
+}
+.cyl-tick{position:absolute;left:0;width:10px;height:1px;background:#475569;}
+.cyl-water{
+  position:absolute;bottom:0;left:0;width:100%;
+  background:linear-gradient(180deg,rgba(56,189,248,0.55),rgba(14,116,144,0.75));
+  transition:height 1s ease;
+}
+.cyl-object{
+  position:absolute;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:4px;
+  font-size:12px;display:flex;align-items:center;justify-content:center;transition:bottom 1s ease;opacity:0;
+}
+.cyl-label{font-size:10px;color:#94a3b8;font-weight:800;margin-top:6px;text-align:center;}
+
+.readout-panel{
+  width:100%;background:#1e293b;border-radius:12px;padding:1rem;margin-top:0.5rem;
+  border:1px solid #334155;
+}
+.rp-row{display:flex;justify-content:space-between;font-size:12.5px;color:#cbd5e1;font-weight:700;padding:4px 0;border-bottom:1px dashed #334155;}
+.rp-row:last-child{border-bottom:none;}
+.rp-row b{color:#fff;}
+.rp-result{
+  margin-top:10px;padding:10px;border-radius:8px;text-align:center;font-size:13px;font-weight:800;
+}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#ecfeff;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-pink{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(8,145,178,0.25);}
+.btn-pink:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">⚖️🧪📏</span>
+  <div class="header-title">Measuring Density of a Solid</div>
+  <div class="header-sub">Spring Balance + Measuring Cylinder Method</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Virtual Lab</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      Understanding Density
+    </div>
+
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Ever wondered why a small iron nail sinks in water but a big plastic bottle floats? It's all about how much
+      mass is packed into a given space — this property is called <b>density</b>.
+    </p>
+
+    <div class="formula-box">
+      <div class="f-main">Density (ρ) = Mass (m) ÷ Volume (V)</div>
+      <div class="f-sub">Usually measured in g/cm³ or g/mL</div>
+    </div>
+
+    <div class="concept-block">
+      <h4>🔍 How do we measure it for a solid?</h4>
+      <p>
+        To find density we need two things: the <b>mass</b> of the solid and its <b>volume</b>.<br><br>
+        <b>Mass</b> is found by hanging the solid from a <b>spring balance</b> and reading its weight directly in grams.<br><br>
+        <b>Volume</b> of an irregular solid can't be measured with a ruler, so we use a <b>measuring cylinder</b> filled with water.
+        We note the water level before (V₁) and after (V₂) fully dipping the solid in. The solid pushes the water level up
+        by an amount exactly equal to its own volume, so <b>Volume = V₂ − V₁</b>.
+      </p>
+    </div>
+
+    <div class="hint">
+      <b>Why this works:</b> A solid dipped fully in water displaces (pushes aside) a volume of water exactly equal to
+      its own volume. This simple idea is called the <b>displacement method</b> and lets us measure the volume of even
+      oddly shaped stones or metal pieces.
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      Find the Density of a Stone
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">🪨</span><div class="home-txt">A Small Stone or Metal Piece</div></div>
+      <div class="home-item"><span class="home-icon">⚖️</span><div class="home-txt">A Spring Balance</div></div>
+      <div class="home-item"><span class="home-icon">🧵</span><div class="home-txt">A Piece of Thread</div></div>
+      <div class="home-item"><span class="home-icon">🧪</span><div class="home-txt">A Measuring Cylinder</div></div>
+      <div class="home-item"><span class="home-icon">💧</span><div class="home-txt">Some Water</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Tie the thread around the stone and hang it from the hook of the spring balance. Note the reading —
+        this is the <b>mass (m)</b> of the stone in grams.<br>
+        <b>Step 2:</b> Pour some water into the measuring cylinder and note the initial water level — this is <b>V₁</b>.<br>
+        <b>Step 3:</b> Gently lower the stone into the water using the thread until it is fully submerged, without touching
+        the bottom or sides. Note the new water level — this is <b>V₂</b>.<br>
+        <b>Step 4:</b> Calculate the volume of the stone as <b>V₂ − V₁</b>, then find density using
+        Density = Mass ÷ Volume.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Virtual Density Lab
+    </div>
+
+    <div class="material-title-line">📋 Pick a solid, then Weigh it and Dip it in water</div>
+
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Choose a material below. First tap "Weigh on Spring Balance", then tap "Dip in Measuring Cylinder" to see the
+      water rise and calculate the density automatically.
+    </p>
+
+    <div class="sim-area">
+      <div class="mirror-choice">
+        <button class="m-tab active" id="btn-stone" onclick="changeMaterial('stone')">🪨 Stone</button>
+        <button class="m-tab" id="btn-iron" onclick="changeMaterial('iron')">🔩 Iron Piece</button>
+        <button class="m-tab" id="btn-alu" onclick="changeMaterial('alu')">🥫 Aluminium Piece</button>
+      </div>
+
+      <div class="lab-row">
+        <div class="balance-wrap">
+          <div class="balance-hook"></div>
+          <div class="balance-spring"></div>
+          <div class="balance-string" id="bal-string" style="display:none;"></div>
+          <div class="hang-object" id="bal-object" style="background:#94a3b8;display:none;">🪨</div>
+          <div class="balance-body">
+            <div class="balance-dial" id="bal-dial">-- g</div>
+            <div class="balance-scale">SPRING BALANCE</div>
+          </div>
+        </div>
+
+        <div class="cyl-wrap">
+          <div class="cylinder" id="cylinder">
+            <div class="cyl-water" id="cyl-water" style="height:40%;"></div>
+            <div class="cyl-object" id="cyl-object">🪨</div>
+          </div>
+          <div class="cyl-label">MEASURING CYLINDER</div>
+        </div>
+      </div>
+
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#7dd3fc;margin:0.8rem 0; text-align:center;">
+        Tap "Weigh on Spring Balance" to record the mass of the stone.
+      </div>
+
+      <div class="readout-panel">
+        <div class="rp-row"><span>Mass (m)</span><b id="rp-mass">--</b></div>
+        <div class="rp-row"><span>Initial water level (V₁)</span><b id="rp-v1">--</b></div>
+        <div class="rp-row"><span>Final water level (V₂)</span><b id="rp-v2">--</b></div>
+        <div class="rp-row"><span>Volume of solid (V₂ − V₁)</span><b id="rp-vol">--</b></div>
+        <div class="rp-result" id="rp-result" style="display:none;"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:1.2rem;flex-wrap:wrap;justify-content:center;">
+        <button class="action-btn btn-pink" onclick="weighObject()">⚖️ Weigh on Spring Balance</button>
+        <button class="action-btn btn-pink" onclick="dipObject()">🧪 Dip in Measuring Cylinder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Let's see if you can crack all density secrets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>What is the formula for density?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Mass × Volume</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Mass ÷ Volume</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Volume ÷ Mass</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>What does a spring balance measure in this experiment?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) The volume of the solid</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">B) The mass (weight) of the solid</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) The temperature of water</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>How do we find the volume of an irregular solid using a measuring cylinder?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">B) By finding the rise in water level (V₂ − V₁) after dipping it</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) By measuring its length with a ruler</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) By weighing the empty cylinder</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Why must the solid be fully submerged and not touch the sides of the cylinder?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">A) So it displaces water equal to its full, true volume</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">B) So the water does not get dirty</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) So the spring balance reading changes</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>A stone has mass 150 g. Water level rises from 100 mL to 150 mL when it is dipped in. What is its density?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) 3 g/cm³</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) 1.5 g/cm³</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) 150 g/cm³</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-pink" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Check Results</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retry Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Density Formula:</b> Density = Mass ÷ Volume, usually expressed in g/cm³ or g/mL.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Mass from Spring Balance:</b> Hang the solid using a thread and read its mass directly off the spring balance.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Volume by Displacement:</b> Note water level before (V₁) and after (V₂) fully dipping the solid; Volume = V₂ − V₁.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#f59e0b;">4</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Works for Irregular Shapes:</b> This displacement method is especially useful for stones or objects whose shape makes ruler measurement impossible.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#ef4444;">5</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Compare with Water:</b> Water has a density of 1 g/cm³. Anything with a higher density than water sinks; anything lower floats.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById('tab-' + tabId).classList.add('active');
+
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// DENSITY LAB SIMULATOR
+const materialData = {
+  stone: { emoji:"🪨", color:"#94a3b8", mass:150, v1:100, v2:150 },
+  iron:  { emoji:"🔩", color:"#64748b", mass:158, v1:100, v2:120 },
+  alu:   { emoji:"🥫", color:"#cbd5e1", mass:108, v1:100, v2:140 }
+};
+let currentMaterial = "stone";
+let stage = 0; // 0 = nothing done, 1 = weighed, 2 = dipped
+
+function changeMaterial(mat) {
+  currentMaterial = mat;
+  stage = 0;
+  document.querySelectorAll('.m-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + mat).classList.add('active');
+
+  const data = materialData[mat];
+
+  // reset balance
+  document.getElementById('bal-object').style.display = "none";
+  document.getElementById('bal-string').style.display = "none";
+  document.getElementById('bal-dial').textContent = "-- g";
+  document.getElementById('bal-object').textContent = data.emoji;
+  document.getElementById('bal-object').style.background = data.color;
+
+  // reset cylinder
+  document.getElementById('cyl-water').style.height = pctForVolume(data.v1) + "%";
+  document.getElementById('cyl-object').style.opacity = "0";
+  document.getElementById('cyl-object').textContent = data.emoji;
+
+  // reset readout
+  document.getElementById('rp-mass').textContent = "--";
+  document.getElementById('rp-v1').textContent = "--";
+  document.getElementById('rp-v2').textContent = "--";
+  document.getElementById('rp-vol').textContent = "--";
+  document.getElementById('rp-result').style.display = "none";
+
+  document.getElementById('sim-status').textContent = "Tap \"Weigh on Spring Balance\" to record the mass of the " + matName(mat) + ".";
+}
+
+function matName(mat){
+  return mat === "stone" ? "stone" : (mat === "iron" ? "iron piece" : "aluminium piece");
+}
+
+function pctForVolume(v){
+  // maps a 0-200 mL range onto 0-90% cylinder fill height
+  return Math.min(90, (v/200)*90);
+}
+
+function weighObject() {
+  const data = materialData[currentMaterial];
+  document.getElementById('bal-string').style.display = "block";
+  document.getElementById('bal-object').style.display = "flex";
+  document.getElementById('bal-dial').textContent = data.mass + " g";
+  document.getElementById('rp-mass').textContent = data.mass + " g";
+  document.getElementById('sim-status').textContent = "Mass recorded as " + data.mass + " g. Now note the water level and tap \"Dip in Measuring Cylinder\"!";
+  document.getElementById('rp-v1').textContent = data.v1 + " mL";
+  stage = 1;
+}
+
+function dipObject() {
+  if (stage < 1) {
+    document.getElementById('sim-status').textContent = "Please weigh the object first before dipping it in water!";
+    return;
+  }
+  const data = materialData[currentMaterial];
+  const waterEl = document.getElementById('cyl-water');
+  const objEl = document.getElementById('cyl-object');
+
+  waterEl.style.height = pctForVolume(data.v2) + "%";
+  objEl.style.bottom = (pctForVolume(data.v2) - 8) + "%";
+  objEl.style.opacity = "1";
+
+  document.getElementById('rp-v2').textContent = data.v2 + " mL";
+  const vol = data.v2 - data.v1;
+  document.getElementById('rp-vol').textContent = vol + " mL (cm³)";
+
+  const density = (data.mass / vol).toFixed(2);
+  const resultEl = document.getElementById('rp-result');
+  resultEl.style.display = "block";
+  if (density >= 1) {
+    resultEl.style.background = "#164e63";
+    resultEl.style.color = "#7dd3fc";
+    resultEl.textContent = "Density = " + data.mass + " ÷ " + vol + " = " + density + " g/cm³ — denser than water, it sinks!";
+  } else {
+    resultEl.style.background = "#164e63";
+    resultEl.style.color = "#7dd3fc";
+    resultEl.textContent = "Density = " + data.mass + " ÷ " + vol + " = " + density + " g/cm³ — lighter than water, it would float!";
+  }
+
+  document.getElementById('sim-status').textContent = "Water rose from " + data.v1 + " mL to " + data.v2 + " mL. Volume of the " + matName(currentMaterial) + " = " + vol + " mL.";
+  stage = 2;
+}
+
+// initialize default balance object emoji
+document.getElementById('bal-object').textContent = materialData.stone.emoji;
+document.getElementById('cyl-object').textContent = materialData.stone.emoji;
+
+// QUIZ SYSTEM
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! Density is Mass divided by Volume.", no: "Incorrect. Density = Mass ÷ Volume." },
+  q2: { ok: "Excellent! The spring balance gives us the mass (weight) of the solid.", no: "Wrong! The spring balance measures the mass of the solid, not its volume." },
+  q3: { ok: "Perfect! The rise in water level (V₂ − V₁) equals the volume of the solid.", no: "Not quite. Volume is found from the rise in water level, V₂ − V₁." },
+  q4: { ok: "Great! Full submersion without touching the sides ensures an accurate displaced volume.", no: "Try again! Full, free submersion ensures the water displaced truly equals the solid's volume." },
+  q5: { ok: "Correct! Volume = 150−100 = 50 mL, so Density = 150÷50 = 3 g/cm³.", no: "Incorrect. Volume = 150−100 = 50 mL, so Density = 150÷50 = 3 g/cm³." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Density Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),#0e7490)";
+  }
+
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>

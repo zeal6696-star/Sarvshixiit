@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demonstrating reduction of friction using lubrication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght=400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#ec4899;
+  --primary-dark:#be185d;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --bg:#fff1f2;
+  --card:#ffffff;
+  --txt:#1e293b;
+  --txt2:#475569;
+  --bdr:#e2e8f0;
+  --shadow:0 8px 24px rgba(236,72,153,0.06);
+  --radius:20px;
+  --radius-sm:12px;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--txt);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+.app{max-width:740px;margin:0 auto;padding:1rem 1rem 3rem;}
+
+/* HEADER */
+.header{text-align:center;padding:2rem 1rem 1.5rem;}
+.header-emoji{font-size:50px;display:block;margin-bottom:6px;}
+.header-title{
+  font-family:'Fredoka One',cursive;
+  font-size:26px;
+  color:var(--primary-dark);
+  line-height:1.3;
+}
+.header-sub{
+  font-size:12px;color:var(--primary-dark);margin-top:8px;font-weight:800;
+  background:#fff;display:inline-block;padding:4px 14px;border-radius:20px;
+  border:2px solid #ffe4e6;text-transform:uppercase;
+}
+
+/* NAVIGATION */
+.nav{
+  display:flex;gap:6px;flex-wrap:wrap;padding:8px;
+  background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:1.5rem;border:1px solid var(--bdr);
+}
+.nav-btn{
+  flex:1;min-width:100px;padding:10px 6px;border-radius:var(--radius-sm);
+  border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:0.2s;
+}
+.nav-btn:hover{background:#ffe4e6;color:var(--primary-dark);}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+/* TABS */
+.tab{display:none;animation:fadeIn 0.4s ease-out;}
+.tab.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid var(--bdr);
+}
+.card-title{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--txt);
+  margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;
+}
+.card-title .icon{
+  width:32px;height:32px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#fff;
+}
+
+/* SECTION BLOCKS */
+.concept-block {
+  background:#f8fafc;border:1px solid #e2e8f0;
+  padding:1.2rem;border-radius:var(--radius-sm);margin-top:10px;
+}
+.concept-block h4 { font-family:'Fredoka One',cursive; color:var(--primary-dark); font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.concept-block p { font-size:13.5px; color:var(--txt2); line-height:1.5; }
+
+.material-title-line {
+  font-size:14px; font-weight:800; color:var(--primary-dark); background:#ffe4e6; 
+  padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:10px;
+}
+
+.hint{
+  background:#fff5f5;border-left:4px solid var(--primary);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:0.9rem 1.1rem;font-size:13.5px;color:var(--txt2);line-height:1.5;margin:1rem 0;
+}
+
+/* HOME MATERIAL LIST */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0.5rem 0 1.5rem;}
+.home-item{
+  background:#fff;border:2px dashed #cbd5e1;border-radius:var(--radius-sm);
+  padding:1rem 0.5rem;text-align:center;
+}
+.home-icon{font-size:30px;display:block;margin-bottom:4px;}
+.home-txt{font-size:12px;font-weight:700;color:var(--txt2);}
+
+/* SIMULATION WORKSPACE */
+.sim-area{
+  background:#0f172a;border-radius:var(--radius);padding:1.5rem;
+  margin:1.5rem 0;display:flex;flex-direction:column;align-items:center;position:relative;
+}
+.mirror-choice{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;}
+.m-tab{
+  padding:6px 14px;border-radius:20px;border:2px solid #334155;background:transparent;
+  color:#94a3b8;font-size:11.5px;font-weight:800;cursor:pointer;
+}
+.m-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.track-view{
+  width:100%;height:130px;border-radius:12px;position:relative;overflow:hidden;
+  border:4px solid #64748b;box-shadow:inset 0 0 20px rgba(0,0,0,0.6);
+  transition:0.4s;
+}
+.track-view.oiled::after{
+  content:"";position:absolute;left:0;bottom:0;width:100%;height:16px;
+  background:linear-gradient(180deg,rgba(250,204,21,0.55),rgba(202,138,4,0.35));
+}
+.push-box{
+  position:absolute;bottom:14px;left:14px;width:54px;height:54px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  transition:left 1.2s cubic-bezier(0.22,0.9,0.34,1);box-shadow:0 4px 10px rgba(0,0,0,0.4);z-index:2;
+}
+.friction-meter{width:100%;margin-top:1.2rem;}
+.fm-label{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;font-weight:800;margin-bottom:4px;}
+.fm-bar{width:100%;height:14px;background:#1e293b;border-radius:10px;overflow:hidden;border:1px solid #334155;}
+.fm-fill{height:100%;border-radius:10px;transition:width 0.5s ease, background 0.5s ease;}
+
+/* QUIZ TRACKER & BUTTONS */
+.quiz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:1rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--txt2);}
+.q-dot.done-ok{background:var(--green);color:#fff;}
+.q-dot.done-no{background:var(--red);color:#fff;}
+
+.quiz-q{background:#fff;border:1px solid #e2e8f0;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.quiz-title{font-size:14px;font-weight:800;margin-bottom:0.75rem;display:flex;gap:8px;}
+.quiz-num{background:var(--primary);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-btn{
+  padding:10px 14px;border-radius:var(--radius-sm);border:2px solid #e2e8f0;
+  background:#fafafa;font-size:13px;font-weight:700;color:var(--txt2);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:0.15s;
+}
+.quiz-btn:hover:not(:disabled){border-color:var(--primary);background:#fff1f2;}
+.quiz-btn.selected{border-color:var(--blue);background:#eff6ff;}
+.quiz-btn.correct-ans{background:#dcfce7;border-color:var(--green);color:#15803d;}
+.quiz-btn.wrong-ans{background:#fee2e2;border-color:var(--red);color:#b91c1c;}
+.quiz-feedback{font-size:12.5px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;line-height:1.4;}
+
+.action-btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:0.2s;
+}
+.btn-pink{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 12px rgba(236,72,153,0.2);}
+.btn-pink:hover{transform:translateY(-1px);opacity:0.95;}
+
+.score-box{border-radius:var(--radius);padding:2rem 1rem;text-align:center;margin-top:1rem;display:none;color:#fff;}
+
+/* SUMMARY STYLES */
+.sum-card{background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:var(--radius-sm);display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.sum-number{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <span class="header-emoji">🛢️⚙️📦</span>
+  <div class="header-title">Reducing Friction Using Lubrication</div>
+  <div class="header-sub">Easy Science Class 8</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="openTab('story')">📖 What is it?</button>
+  <button class="nav-btn" onclick="openTab('diy')">🏡 Try It At Home</button>
+  <button class="nav-btn" onclick="openTab('simulation')">🎮 Oil Test</button>
+  <button class="nav-btn" onclick="openTab('challenge')">🧠 Mega Quiz</button>
+  <button class="nav-btn" onclick="openTab('points')">⭐ Top Points</button>
+</div>
+
+<div id="tab-story" class="tab active">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">📖</div>
+      Understanding Lubrication
+    </div>
+
+    <p style="font-size:14px;color:var(--txt2);line-height:1.6;">
+      Have you heard a door hinge that "creaks" loudly, and then someone puts a drop of oil on it and it goes silent?
+      That oil is doing something clever — it's <b>reducing friction</b>!
+    </p>
+
+    <div class="concept-block">
+      <h4>🔍 What is actually happening here?</h4>
+      <p>
+        We already know that friction happens because tiny bumps on two touching surfaces rub and lock against each other.<br><br>
+        A <b>lubricant</b> is a slippery substance — like oil, grease, or even water — that we put between two rubbing surfaces.<br><br>
+        The lubricant fills up the tiny gaps and bumps, forming a thin slippery layer. Now the two rough surfaces don't touch each other directly anymore — instead, they slide over this smooth liquid layer. This makes it much easier to slide, and greatly <b>reduces the friction</b>.<br><br>
+        This process of adding a lubricant to reduce friction is called <b>lubrication</b>.
+      </p>
+    </div>
+    
+    <div class="hint">
+      <b>Real Life Example:</b> That is why mechanics oil a bicycle chain, machines in factories are greased regularly, and cooks add a little oil to a frying pan — all to reduce friction and make movement smoother!
+    </div>
+  </div>
+</div>
+
+<div id="tab-diy" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--blue);">🏡</div>
+      The Oiled Surface Test
+    </div>
+
+    <div class="material-title-line">📋 Material Required for this experiment:</div>
+    
+    <div class="home-grid">
+      <div class="home-item"><span class="home-icon">📦</span><div class="home-txt">A Small Box or Toy Car</div></div>
+      <div class="home-item"><span class="home-icon">🪵</span><div class="home-txt">A Flat Wooden Board</div></div>
+      <div class="home-item"><span class="home-icon">🫗</span><div class="home-txt">A Few Drops of Cooking Oil</div></div>
+      <div class="home-item"><span class="home-icon">🧻</span><div class="home-txt">Tissue or Cloth (to spread it)</div></div>
+    </div>
+
+    <div class="concept-block" style="background:#fffaf0; border-color:#fef3c7;">
+      <h4 style="color:#d97706;">🚀 What to do? (Steps):</h4>
+      <p style="line-height:1.6;">
+        <b>Step 1:</b> Place the box on the dry wooden board and push it gently with one finger. Notice how much force it takes to start it sliding.<br>
+        <b>Step 2:</b> Now, put a few drops of cooking oil on the board and spread it evenly with a tissue or cloth to make a thin, slippery layer.<br>
+        <b>Step 3:</b> Place the same box on the oiled part of the board and give it the exact same gentle push.<br>
+        <b>Step 4:</b> Compare — on the oiled surface, the box slides much farther and more easily than on the dry surface. This proves that the oil (lubricant) reduced the friction between the box and the board!
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-simulation" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--green);">🎮</div>
+      Virtual Lubrication Simulator
+    </div>
+    
+    <div class="material-title-line">📋 Simulator Material: 1 Virtual Box + Dry / Oiled Board</div>
+    
+    <p style="font-size:13.5px;color:var(--txt2);margin-bottom:1rem;">
+      Choose dry or oiled surface, then hit "Push the Box!" and see how far it slides.
+    </p>
+
+    <div class="sim-area">
+      <div class="mirror-choice">
+        <button class="m-tab active" id="btn-dry" onclick="changeSurface('dry')">🪵 Dry Board</button>
+        <button class="m-tab" id="btn-oiled" onclick="changeSurface('oiled')">🛢️ Oiled Board</button>
+      </div>
+      
+      <div class="track-view" id="track" style="background:#fde68a;">
+        <div class="push-box" id="push-box" style="left:14px;">📦</div>
+      </div>
+
+      <div class="friction-meter">
+        <div class="fm-label"><span>LOW FRICTION</span><span>HIGH FRICTION</span></div>
+        <div class="fm-bar"><div class="fm-fill" id="fm-fill" style="width:55%;background:#f59e0b;"></div></div>
+      </div>
+      
+      <div id="sim-status" style="font-size:13px;font-weight:800;color:#fbbf24;margin-top:1rem; text-align:center;">
+        The dry wooden board has bumps rubbing directly — it takes a good push to slide only a little.
+      </div>
+
+      <button class="action-btn btn-pink" style="margin-top:1.2rem;" onclick="pushBox()">👉 Push the Box!</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-challenge" class="tab">
+  <div class="card" style="text-align:center;">
+    <h3 style="font-family:'Fredoka One',cursive;font-size:20px;">Quick 5-Question Challenge! 🧠</h3>
+    <p style="font-size:13px;color:var(--txt2);margin:4px 0 12px;">Let's see if you can crack all lubrication secrets!</p>
+    <div class="quiz-steps" id="tracker-container">
+      <div class="q-dot">1</div><div class="q-dot">2</div><div class="q-dot">3</div><div class="q-dot">4</div><div class="q-dot">5</div>
+    </div>
+  </div>
+
+  <div id="q1" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">1</span>What do we call a slippery substance like oil or grease that is used to reduce friction?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">A) Insulator</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',true)">B) Lubricant</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q1',false)">C) Conductor</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div id="q2" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">2</span>How does oil actually reduce the friction between two surfaces?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',true)">B) It fills the bumps and creates a smooth slippery layer between them</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">A) It makes the surfaces magnetic</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q2',false)">C) It makes the box lighter in weight</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div id="q3" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">3</span>On which board would a box slide farther with the same push?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">A) The dry wooden board</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',true)">B) The oiled wooden board</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q3',false)">C) Both slide exactly the same distance</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div id="q4" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">4</span>Why do mechanics regularly oil a bicycle chain?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',true)">A) To reduce friction so the chain moves smoothly</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">B) To make the chain heavier</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q4',false)">C) To change the chain's colour</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div id="q5" class="quiz-q">
+    <div class="quiz-title"><span class="quiz-num">5</span>Which of these is an everyday example of lubrication?</div>
+    <div class="quiz-options">
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',true)">A) Adding oil to a frying pan or greasing machine parts</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">B) Wearing spiked running shoes</button>
+      <button class="quiz-btn" onclick="saveResponse(this,'q5',false)">C) Rubbing sandpaper on wood</button>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <button class="action-btn btn-pink" style="width:100%;justify-content:center;padding:12px;" onclick="checkTotalScore()">🏆 Check Results</button>
+
+  <div class="score-box" id="final-card-box">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:38px;" id="disp-score">0/5</h2>
+    <div style="font-size:24px;margin:5px 0;" id="disp-stars">⭐</div>
+    <p id="disp-msg" style="font-weight:700;"></p>
+    <button class="action-btn" style="margin-top:1rem;background:#fff;color:#000;" onclick="restartChallenge()">🔄 Retry Quiz</button>
+  </div>
+</div>
+
+<div id="tab-points" class="tab">
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background:var(--primary);">🎯</div>
+      Quick Summary Points
+    </div>
+    
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--primary);">1</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Lubricant = Slippery Helper:</b> Oil, grease, or water placed between two rubbing surfaces to reduce friction.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--blue);">2</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Fills the Bumps:</b> The lubricant coats the tiny bumps so the rough surfaces no longer touch and lock directly.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:var(--green);">3</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Oiled = Easier Sliding:</b> With less friction, the same push force makes objects slide farther and more smoothly.</div>
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-number" style="background:#f59e0b;">4</div>
+      <div style="font-size:13.5px;color:var(--txt2);"><b>Used Everywhere:</b> Oiling bicycle chains, greasing machine gears, and cooking with oil are everyday examples of lubrication.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// SWITCH TABS
+function openTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  const mapping = { story:0, diy:1, simulation:2, challenge:3, points:4 };
+  document.querySelectorAll('.nav-btn')[mapping[tabId]].classList.add('active');
+}
+
+// LUBRICATION PUSH SIMULATOR
+const surfaceData = {
+  dry:   { color:"#fde68a", oiled:false, distance:"32%", friction:"55%", fcolor:"#f59e0b", msg:"The dry wooden board has bumps rubbing directly — it takes a good push to slide only a little." },
+  oiled: { color:"#fde68a", oiled:true,  distance:"75%", friction:"15%", fcolor:"var(--green)", msg:"The oil fills the bumps with a slippery layer — the box glides much farther with the same push!" }
+};
+let currentSurface = "dry";
+
+function changeSurface(surf) {
+  currentSurface = surf;
+  document.querySelectorAll('.m-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + surf).classList.add('active');
+
+  const data = surfaceData[surf];
+  const track = document.getElementById('track');
+  track.style.background = data.color;
+  track.classList.toggle('oiled', data.oiled);
+
+  document.getElementById('sim-status').textContent = data.msg;
+  document.getElementById('fm-fill').style.width = data.friction;
+  document.getElementById('fm-fill').style.background = data.fcolor;
+
+  document.getElementById('push-box').style.left = "14px";
+}
+
+function pushBox() {
+  const data = surfaceData[currentSurface];
+  const box = document.getElementById('push-box');
+  box.style.left = "14px";
+  void box.offsetWidth;
+  box.style.left = data.distance;
+}
+
+// QUIZ SYSTEM
+const selectedChoices = {};
+const feedbackTexts = {
+  q1: { ok: "Correct! A lubricant is a slippery substance used to reduce friction.", no: "Incorrect. Oil, grease, or water used this way is called a Lubricant." },
+  q2: { ok: "Excellent! The oil coats the tiny bumps so the surfaces glide over a smooth layer instead.", no: "Wrong! The oil fills the tiny bumps and forms a smooth slippery layer between the surfaces." },
+  q3: { ok: "Perfect! Less friction on the oiled board lets the box slide farther for the same push.", no: "Not quite. The oiled board has less friction, so the box slides much farther." },
+  q4: { ok: "Great! Oiling the chain reduces friction so it moves smoothly and doesn't wear out fast.", no: "Try again! Oiling reduces friction, making the chain move smoothly." },
+  q5: { ok: "Correct! Oiling pans and greasing machines are classic everyday uses of lubrication.", no: "Incorrect. Adding oil to a pan or greasing machines are examples of lubrication, not increasing friction." }
+};
+
+function saveResponse(btn, qId, isCorrect) {
+  const container = document.getElementById(qId);
+  container.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoices[qId] = { correct: isCorrect, element: btn };
+}
+
+function checkTotalScore() {
+  let totalCorrect = 0;
+  const totalItems = 5;
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, i) => {
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    const state = selectedChoices[qId];
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+    
+    if(state) {
+      if(state.correct) {
+        totalCorrect++;
+        state.element.classList.add('correct-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#dcfce7";
+        fbBox.style.color = "#15803d";
+        fbBox.textContent = "✅ " + feedbackTexts[qId].ok;
+        dots[i].className = "q-dot done-ok";
+      } else {
+        state.element.classList.add('wrong-ans');
+        fbBox.className = "quiz-feedback show";
+        fbBox.style.background = "#fee2e2";
+        fbBox.style.color = "#b91c1c";
+        fbBox.textContent = "❌ " + feedbackTexts[qId].no;
+        dots[i].className = "q-dot done-no";
+        
+        qBox.querySelectorAll('.quiz-btn').forEach(b => {
+          if(b.getAttribute('onclick').includes('true')) b.classList.add('correct-ans');
+        });
+      }
+    } else {
+      fbBox.className = "quiz-feedback show";
+      fbBox.style.background = "#fee2e2";
+      fbBox.style.color = "#b91c1c";
+      fbBox.textContent = "⚠️ Skipped question! " + feedbackTexts[qId].no;
+      dots[i].className = "q-dot done-no";
+    }
+  });
+  
+  const scoreCard = document.getElementById('final-card-box');
+  document.getElementById('disp-score').textContent = `${totalCorrect} / ${totalItems}`;
+  
+  let msg = "Nice try! Play again to make it a perfect score!";
+  let stars = "⭐";
+  let bg = "linear-gradient(135deg,#ef4444,#ea580c)";
+  
+  if(totalCorrect === 5) {
+    msg = "Fantastic! You are a Lubrication Master! 🌟";
+    stars = "⭐⭐⭐⭐⭐";
+    bg = "linear-gradient(135deg,#22c55e,#10b981)";
+  } else if(totalCorrect >= 3) {
+    msg = "Good going! Your concept is very strong.";
+    stars = "⭐⭐⭐";
+    bg = "linear-gradient(135deg,var(--primary),#be185d)";
+  }
+  
+  document.getElementById('disp-msg').textContent = msg;
+  document.getElementById('disp-stars').textContent = stars;
+  scoreCard.style.background = bg;
+  scoreCard.style.display = "block";
+  scoreCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function restartChallenge() {
+  document.getElementById('final-card-box').style.display = "none";
+  const dots = document.querySelectorAll('.q-dot');
+  
+  Object.keys(feedbackTexts).forEach((qId, index) => {
+    delete selectedChoices[qId];
+    const qBox = document.getElementById(qId);
+    const fbBox = document.getElementById('fb-' + qId);
+    fbBox.style.display = "none";
+    fbBox.textContent = "";
+    
+    dots[index].className = "q-dot";
+    dots[index].textContent = index + 1;
+    
+    qBox.querySelectorAll('.quiz-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('selected', 'correct-ans', 'wrong-ans');
+    });
+  });
+}
+</script>
+</body>
+</html>
